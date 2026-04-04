@@ -1,0 +1,571 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "mongodb"
+    url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+    OWNER
+    MEMBER
+    EDITOR
+    VIEWER
+}
+
+enum SubscriptionStatus {
+    TRIAL
+    ACTIVE
+    INACTIVE
+    CANCELLED
+}
+
+enum PlanType {
+    SOLO
+    TEAM
+}
+
+enum LeadType {
+    PERSON
+    BUSINESS
+    INSTITUTE
+    SOCIETY
+    DEVELOPER
+}
+
+enum LeadSource {
+    MANUAL
+    IMPORT
+    GOOGLE_MAPS
+    WEBSITE
+    DIRECTORY
+    EXTENSION
+    FORM
+}
+
+enum LeadStatus {
+    NEW
+    CONTACTED
+    INTERESTED
+    TRIAL
+    CUSTOMER
+    REJECTED
+    ADMITTED
+}
+
+enum ContactType {
+    CALL
+    WHATSAPP
+    EMAIL
+    DEMO
+    MEETING
+}
+
+model Organization {
+    id        String   @id @default(auto()) @map("_id") @db.ObjectId
+    name      String
+    slug      String?  @unique
+    users     User[]
+    leads     Lead[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model User {
+    id             String     @id @default(auto()) @map("_id") @db.ObjectId
+    email          String     @unique
+    name           String?
+    role           UserRole   @default(OWNER)
+    orgId          String?    @db.ObjectId
+    organization   Organization? @relation(fields: [orgId], references: [id])
+    instituteId    String?    @db.ObjectId
+    institute      Institute? @relation(fields: [instituteId], references: [id])
+    emailVerified  Boolean    @default(false)
+    otpHash        String?
+    otpResendCount Int        @default(0)
+    otpAttempts    Int        @default(0)
+    lastOtpSentAt  DateTime?
+    otpExpiresAt   DateTime?
+    otpPending     Boolean    @default(false)
+    deletedAt      DateTime?
+    createdAt      DateTime   @default(now())
+    updatedAt      DateTime   @updatedAt
+
+    @@index([orgId])
+    @@index([instituteId])
+}
+
+model Institute {
+    id              String             @id @default(auto()) @map("_id") @db.ObjectId
+    name            String?
+    description     String?
+    phone           String?
+    whatsapp        String?
+    city            String?
+    state           String?
+    address         String?
+    timings         String?
+    logo            String?
+    banner          String?
+    websiteUrl      String?
+    instagramUrl    String?
+    facebookUrl     String?
+    youtubeUrl      String?
+    linkedinUrl     String?
+    isOnboarded     Boolean            @default(false)
+    slug            String?            @unique
+    users           User[]
+    leads           Lead[]
+    students        Student[]
+    teachers        Teacher[]
+    courses         Course[]
+    batches         Batch[]
+    payments        Payment[]
+    feePlans        FeePlan[]
+    settings        InstituteSettings?
+    subscription    Subscription?
+    deletedAt       DateTime?
+    createdAt       DateTime           @default(now())
+    updatedAt       DateTime           @updatedAt
+    feeInstallments FeeInstallment[]
+    tenant          Tenant?
+
+    @@index([phone])
+}
+
+model Subscription {
+    id               String             @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId      String             @unique @db.ObjectId
+    institute        Institute          @relation(fields: [instituteId], references: [id])
+    razorpaySubId    String?
+    planType         PlanType?          @default(SOLO)
+    userLimit        Int?               @default(1)
+    trialEndsAt      DateTime?
+    status           SubscriptionStatus @default(TRIAL)
+    currentPeriodEnd DateTime?
+    deletedAt        DateTime?
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+
+    @@index([status])
+    @@index([planType])
+    @@index([razorpaySubId])
+}
+
+model Lead {
+    id             String        @id @default(auto()) @map("_id") @db.ObjectId
+    orgId          String?       @db.ObjectId
+    organization   Organization? @relation(fields: [orgId], references: [id])
+    instituteId    String?       @db.ObjectId
+    institute      Institute?    @relation(fields: [instituteId], references: [id])
+    name           String?
+    primaryPhone   String?
+    secondaryPhone String?
+    phone          String?
+    email          String?
+    type           LeadType      @default(PERSON)
+    category       String?
+    city           String?
+    state          String?
+    country        String?
+    address        String?
+    website        String?
+    googleMapsLink String?
+    source         LeadSource    @default(MANUAL)
+    status         LeadStatus    @default(NEW)
+    rating         Float?
+    employeeSize   String?
+    notes          String?
+    tags           String[]
+    course         String?
+    message        String?
+    followUpAt     DateTime?
+    createdBy      String?       @db.ObjectId
+    deletedAt      DateTime?
+    followUps      FollowUp[]
+    leadProducts   LeadProduct[]
+    contactLogs    ContactLog[]
+    createdAt      DateTime      @default(now())
+    updatedAt      DateTime      @updatedAt
+
+    @@index([orgId, createdAt])
+    @@index([orgId, status])
+    @@index([instituteId, createdAt])
+    @@index([instituteId, status])
+    @@index([primaryPhone])
+    @@index([city])
+    @@index([category])
+    @@index([status])
+    @@index([email])
+}
+
+model Product {
+    id           String        @id @default(auto()) @map("_id") @db.ObjectId
+    name         String
+    code         String        @unique
+    market       String
+    description  String?
+    active       Boolean       @default(true)
+    leadProducts LeadProduct[]
+    contactLogs  ContactLog[]
+    createdAt    DateTime      @default(now())
+}
+
+model LeadProduct {
+    id        String     @id @default(auto()) @map("_id") @db.ObjectId
+    leadId    String     @db.ObjectId
+    lead      Lead       @relation(fields: [leadId], references: [id])
+    productId String     @db.ObjectId
+    product   Product    @relation(fields: [productId], references: [id])
+    status    LeadStatus @default(NEW)
+    priority  Int?
+    notes     String?
+    createdAt DateTime   @default(now())
+
+    @@index([leadId])
+    @@index([productId])
+    @@index([status])
+}
+
+model ContactLog {
+    id        String      @id @default(auto()) @map("_id") @db.ObjectId
+    leadId    String      @db.ObjectId
+    lead      Lead        @relation(fields: [leadId], references: [id])
+    productId String?     @db.ObjectId
+    product   Product?    @relation(fields: [productId], references: [id])
+    type      ContactType
+    notes     String?
+    createdAt DateTime    @default(now())
+
+    @@index([leadId])
+    @@index([productId])
+    @@index([type])
+}
+
+model FollowUp {
+    id          String   @id @default(auto()) @map("_id") @db.ObjectId
+    leadId      String   @db.ObjectId
+    lead        Lead     @relation(fields: [leadId], references: [id])
+    note        String
+    nextDate    DateTime?
+    completed   Boolean  @default(false)
+    createdById String?  @db.ObjectId
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@index([leadId, createdAt])
+    @@index([nextDate])
+}
+
+model Course {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId String    @db.ObjectId
+    institute   Institute @relation(fields: [instituteId], references: [id])
+    name        String
+    slug        String?
+    banner      String?
+    duration    String?
+    defaultFees Float?
+    description String?
+    createdBy   String?   @db.ObjectId
+    deletedAt   DateTime?
+    batches     Batch[]
+    students    Student[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([instituteId])
+}
+
+model Batch {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId String    @db.ObjectId
+    institute   Institute @relation(fields: [instituteId], references: [id])
+    courseId    String    @db.ObjectId
+    course      Course    @relation(fields: [courseId], references: [id])
+    name        String
+    slug        String?
+    startDate   DateTime?
+    schedule    String?
+    teacherId   String?   @db.ObjectId
+    teacher     Teacher?  @relation(fields: [teacherId], references: [id])
+    createdBy   String?   @db.ObjectId
+    deletedAt   DateTime?
+    students    Student[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([instituteId])
+    @@index([courseId])
+}
+
+model Student {
+    id            String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId   String    @db.ObjectId
+    institute     Institute @relation(fields: [instituteId], references: [id])
+    name          String
+    phone         String
+    email         String?
+    courseId      String?   @db.ObjectId
+    course        Course?   @relation(fields: [courseId], references: [id])
+    batchId       String?   @db.ObjectId
+    batch         Batch?    @relation(fields: [batchId], references: [id])
+    createdBy     String?   @db.ObjectId
+    deletedAt     DateTime?
+    payments      Payment[]
+    feePlans      FeePlan[]
+    admissionDate DateTime  @default(now())
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+
+    @@unique([instituteId, phone])
+    @@index([instituteId])
+    @@index([instituteId, admissionDate])
+    @@index([phone])
+    @@index([email])
+}
+
+model Teacher {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId String    @db.ObjectId
+    institute   Institute @relation(fields: [instituteId], references: [id])
+    name        String
+    slug        String?
+    subject     String?
+    bio         String?
+    createdBy   String?   @db.ObjectId
+    deletedAt   DateTime?
+    batches     Batch[]
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([instituteId])
+}
+
+model FeePlan {
+    id           String           @id @default(auto()) @map("_id") @db.ObjectId
+    studentId    String           @db.ObjectId
+    student      Student          @relation(fields: [studentId], references: [id])
+    instituteId  String           @db.ObjectId
+    institute    Institute        @relation(fields: [instituteId], references: [id])
+    totalAmount  Float
+    dueDate      DateTime?
+    createdBy    String?          @db.ObjectId
+    deletedAt    DateTime?
+    installments FeeInstallment[]
+    createdAt    DateTime         @default(now())
+    updatedAt    DateTime         @updatedAt
+
+    @@index([studentId])
+    @@index([instituteId])
+}
+
+model FeeInstallment {
+    id          String            @id @default(auto()) @map("_id") @db.ObjectId
+    feePlanId   String            @db.ObjectId
+    feePlan     FeePlan           @relation(fields: [feePlanId], references: [id])
+    instituteId String            @db.ObjectId
+    institute   Institute         @relation(fields: [instituteId], references: [id])
+    amount      Float
+    paidOn      DateTime?
+    note        String?
+    status      InstallmentStatus
+    createdBy   String?           @db.ObjectId
+    deletedAt   DateTime?
+    createdAt   DateTime          @default(now())
+    updatedAt   DateTime          @updatedAt
+
+    @@index([feePlanId])
+    @@index([instituteId])
+}
+
+model Payment {
+    id          String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId String    @db.ObjectId
+    institute   Institute @relation(fields: [instituteId], references: [id])
+    studentId   String    @db.ObjectId
+    student     Student   @relation(fields: [studentId], references: [id])
+    amount      Float
+    method      String?
+    reference   String?
+    createdBy   String?   @db.ObjectId
+    deletedAt   DateTime?
+    paidOn      DateTime  @default(now())
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@index([studentId])
+    @@index([instituteId])
+    @@index([instituteId, paidOn])
+}
+
+model InstituteSettings {
+    id                  String    @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId         String    @unique @db.ObjectId
+    institute           Institute @relation(fields: [instituteId], references: [id])
+    leadWhatsappEnabled Boolean   @default(false)
+    autoReplyEnabled    Boolean   @default(false)
+    deletedAt           DateTime?
+    createdAt           DateTime  @default(now())
+    updatedAt           DateTime  @updatedAt
+}
+
+enum InstallmentStatus {
+    PENDING
+    PAID
+    OVERDUE
+}
+
+enum TenantStatus {
+    ACTIVE
+    INACTIVE
+    SUSPENDED
+}
+
+enum LeadVisibilityStatus {
+    AVAILABLE
+    CLAIMED
+    LOCKED
+}
+
+enum LeadClaimMode {
+    MULTI_TENANT_SHARED
+    FIRST_CLAIM_EXCLUSIVE
+    REGION_EXCLUSIVE
+}
+
+enum AuditActorType {
+    USER
+    SYSTEM
+    JOB
+}
+
+enum AuditActionType {
+    LEAD_CLAIMED
+    LEAD_LOCKED
+    LEAD_DISTRIBUTED
+    LEAD_SCORED
+    TENANT_SETTINGS_UPDATED
+}
+
+model GlobalLead {
+    id              String             @id @default(auto()) @map("_id") @db.ObjectId
+    normalizedPhone String             @unique
+    name            String
+    primaryPhone    String?
+    email           String?
+    category        String?
+    city            String?
+    state           String?
+    country         String?
+    address         String?
+    website         String?
+    rating          Float?
+    employeeSize    String?
+    source          LeadSource         @default(MANUAL)
+    status          LeadStatus         @default(NEW)
+    score           Int                @default(0)
+    aiScore         Float?
+    verified        Boolean            @default(false)
+    deletedAt       DateTime?
+    accessRecords   TenantLeadAccess[]
+    claims          LeadClaim[]
+    createdAt       DateTime           @default(now())
+    updatedAt       DateTime           @updatedAt
+
+    @@index([city])
+    @@index([category])
+    @@index([score])
+    @@index([source])
+    @@index([city, category])
+    @@index([createdAt])
+}
+
+model Tenant {
+    id               String             @id @default(auto()) @map("_id") @db.ObjectId
+    instituteId      String             @unique @db.ObjectId
+    institute        Institute          @relation(fields: [instituteId], references: [id])
+    name             String
+    plan             PlanType           @default(SOLO)
+    status           TenantStatus       @default(ACTIVE)
+    claimMode        LeadClaimMode      @default(FIRST_CLAIM_EXCLUSIVE)
+    targetCities     String[]
+    targetCategories String[]
+    minimumScore     Int                @default(0)
+    leadAccess       TenantLeadAccess[]
+    usage            TenantUsage[]
+    claims           LeadClaim[]
+    auditLogs        AuditLog[]
+    createdAt        DateTime           @default(now())
+    updatedAt        DateTime           @updatedAt
+
+    @@index([status])
+    @@index([plan])
+}
+
+model TenantLeadAccess {
+    id               String               @id @default(auto()) @map("_id") @db.ObjectId
+    tenantId         String               @db.ObjectId
+    tenant           Tenant               @relation(fields: [tenantId], references: [id])
+    leadId           String               @db.ObjectId
+    lead             GlobalLead           @relation(fields: [leadId], references: [id])
+    visibilityStatus LeadVisibilityStatus @default(AVAILABLE)
+    claimedAt        DateTime?
+    priority         Int?
+    fitScore         Int?
+    customScore      Int?
+    assignedProduct  String?
+    claims           LeadClaim[]
+    createdAt        DateTime             @default(now())
+    updatedAt        DateTime             @updatedAt
+
+    @@unique([tenantId, leadId])
+    @@index([tenantId, visibilityStatus])
+    @@index([leadId])
+}
+
+model LeadClaim {
+    id                 String            @id @default(auto()) @map("_id") @db.ObjectId
+    tenantId           String            @db.ObjectId
+    tenant             Tenant            @relation(fields: [tenantId], references: [id])
+    leadId             String            @db.ObjectId
+    lead               GlobalLead        @relation(fields: [leadId], references: [id])
+    tenantLeadAccessId String?           @db.ObjectId
+    tenantLeadAccess   TenantLeadAccess? @relation(fields: [tenantLeadAccessId], references: [id])
+    claimMode          LeadClaimMode
+    createdAt          DateTime          @default(now())
+
+    @@index([tenantId, createdAt])
+    @@index([leadId, createdAt])
+}
+
+model TenantUsage {
+    id             String   @id @default(auto()) @map("_id") @db.ObjectId
+    tenantId       String   @db.ObjectId
+    tenant         Tenant   @relation(fields: [tenantId], references: [id])
+    month          String
+    leadsAccessed  Int      @default(0)
+    leadsClaimed   Int      @default(0)
+    enrichmentUsed Int      @default(0)
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    @@unique([tenantId, month])
+    @@index([tenantId])
+}
+
+model AuditLog {
+    id         String          @id @default(auto()) @map("_id") @db.ObjectId
+    tenantId   String?         @db.ObjectId
+    tenant     Tenant?         @relation(fields: [tenantId], references: [id])
+    actorType  AuditActorType
+    actorId    String?
+    action     AuditActionType
+    resourceId String?
+    metadata   Json?
+    createdAt  DateTime        @default(now())
+
+    @@index([tenantId, createdAt])
+    @@index([action, createdAt])
+}

@@ -1,0 +1,20 @@
+﻿export class AppError extends Error {
+    public readonly statusCode: number;
+    public readonly code: string;
+    public readonly details?: unknown;
+
+    constructor(message: string, statusCode = 500, code = "INTERNAL_ERROR", details?: unknown) {
+        super(message);
+        this.name = "AppError";
+        this.statusCode = statusCode;
+        this.code = code;
+        this.details = details;
+    }
+}
+
+export const toAppError = (error: unknown): AppError => {
+    if (error instanceof AppError) return error;
+    if (error instanceof Error) return new AppError(error.message);
+    return new AppError("Unknown error");
+};
+
