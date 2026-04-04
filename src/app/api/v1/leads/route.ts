@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readSessionFromCookie } from "@/lib/auth/auth";
 import { toAppError } from "@/lib/utils/error";
-import { leadhubService } from "@/features/leadhub/services/leadhub.service";
+import { EasyFollowUpService } from "@/features/EasyFollowUp/services/EasyFollowUp.service";
 
 export async function GET(req: NextRequest) {
     try {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
         }
 
         const params = Object.fromEntries(req.nextUrl.searchParams.entries());
-        const data = await leadhubService.listLeads(params, session.instituteId);
+        const data = await EasyFollowUpService.listLeads(params, session.instituteId);
         return NextResponse.json({ success: true, data });
     } catch (error) {
         const appError = toAppError(error);
@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
                 );
             }
 
-            const results = await Promise.allSettled(rows.map((item) => leadhubService.createLead(item, session.instituteId)));
+            const results = await Promise.allSettled(rows.map((item) => EasyFollowUpService.createLead(item, session.instituteId)));
 
             const imported = results.filter((result) => result.status === "fulfilled").length;
             const failed = results.length - imported;
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
             );
         }
 
-        const data = await leadhubService.createLead(body, session.instituteId);
+        const data = await EasyFollowUpService.createLead(body, session.instituteId);
         return NextResponse.json({ success: true, data }, { status: 201 });
     } catch (error) {
         const appError = toAppError(error);

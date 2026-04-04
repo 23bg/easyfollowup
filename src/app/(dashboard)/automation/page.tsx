@@ -57,7 +57,7 @@ export default function AutomationPage() {
             ) : (
                 <div className="mt-6 grid gap-4">
                     {items.map((item) => (
-                        <div key={item.key} className="rounded-md border p-4">
+                        <div key={item.key} className="rounded border p-4">
                             <div className="flex items-center justify-between gap-3">
                                 <div>
                                     <h2 className="font-semibold">{item.title}</h2>

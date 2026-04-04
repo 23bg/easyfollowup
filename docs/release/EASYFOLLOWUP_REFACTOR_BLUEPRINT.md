@@ -1,8 +1,8 @@
-# EasyFollowup Product Refactor Blueprint
+# EasyFollowUp Product Refactor Blueprint
 
 ## 1) Target Product Definition
 
-EasyFollowup becomes a focused, multi-tenant SaaS CRM for small teams:
+EasyFollowUp becomes a focused, multi-tenant SaaS CRM for small teams:
 - Fast lead capture
 - Follow-up reminders and history
 - Team collaboration in one organization
@@ -140,7 +140,7 @@ model Subscription {
 
 ### Remove (Phase-out)
 - `Student`, `Course`, `Batch`, `Teacher`, fee planning/payment academic models
-- LeadHub claim marketplace logic (`GlobalLead`, `TenantLeadAccess`, `LeadClaim`, scoring/audit tied only to marketplace)
+- EasyFollowUp claim marketplace logic (`GlobalLead`, `TenantLeadAccess`, `LeadClaim`, scoring/audit tied only to marketplace)
 - Heavy modules not required for lead follow-up MVP
 
 ### Keep (Refactor)
@@ -321,7 +321,7 @@ for (const oldLead of legacyLeads) {
 - `src/app/(dashboard)`
 
 ### Gradually deprecate
-- `src/features/leadhub`
+- `src/features/EasyFollowUp`
 - `src/features/tenant` (if only marketplace logic)
 - Academic-only modules tied to student/course lifecycle
 

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readSessionFromCookie } from "@/lib/auth/auth";
 import { toAppError } from "@/lib/utils/error";
-import { leadhubService } from "@/features/leadhub/services/leadhub.service";
+import { EasyFollowUpService } from "@/features/EasyFollowUp/services/EasyFollowUp.service";
 
 export async function GET(req: NextRequest) {
     try {
@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
         }
 
         const leadId = req.nextUrl.searchParams.get("leadId") ?? undefined;
-        const data = await leadhubService.listLeadProducts(leadId);
+        const data = await EasyFollowUpService.listLeadProducts(leadId);
         return NextResponse.json({ success: true, data });
     } catch (error) {
         const appError = toAppError(error);
@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const data = await leadhubService.createLeadProduct(body);
+        const data = await EasyFollowUpService.createLeadProduct(body);
         return NextResponse.json({ success: true, data }, { status: 201 });
     } catch (error) {
         const appError = toAppError(error);

@@ -16,8 +16,8 @@ api.interceptors.request.use((config) => {
     return config;
   }
 
-  // Normalize legacy LeadHub callers that still pass /api/* or /api/v1/* paths.
-  const legacyLeadhubPrefixes = [
+  // Normalize legacy EasyFollowUp callers that still pass /api/* or /api/v1/* paths.
+  const legacyEasyFollowUpPrefixes = [
     "/api/leads",
     "/api/lead-sources",
     "/api/contact-logs",
@@ -25,9 +25,9 @@ api.interceptors.request.use((config) => {
     "/api/maps-import",
   ];
 
-  const v1LeadhubPrefixes = legacyLeadhubPrefixes.map((prefix) => `/api/v1${prefix}`);
+  const v1EasyFollowUpPrefixes = legacyEasyFollowUpPrefixes.map((prefix) => `/api/v1${prefix}`);
 
-  if (!legacyLeadhubPrefixes.some((prefix) => rawUrl.startsWith(prefix)) && !v1LeadhubPrefixes.some((prefix) => rawUrl.startsWith(prefix))) {
+  if (!legacyEasyFollowUpPrefixes.some((prefix) => rawUrl.startsWith(prefix)) && !v1EasyFollowUpPrefixes.some((prefix) => rawUrl.startsWith(prefix))) {
     return config;
   }
 

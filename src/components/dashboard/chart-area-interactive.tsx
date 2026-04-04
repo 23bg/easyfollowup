@@ -19,7 +19,7 @@ export function ChartAreaInteractive() {
                 <CardDescription>Dashboard trend chart will be enabled in the next phase.</CardDescription>
             </CardHeader>
             <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
-                <div className="h-[250px] w-full rounded-md border border-dashed bg-muted/30" />
+                <div className="h-[250px] w-full rounded border border-dashed bg-muted/30" />
             </CardContent>
         </Card>
     )

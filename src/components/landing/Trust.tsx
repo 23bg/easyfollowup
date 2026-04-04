@@ -17,7 +17,7 @@ export default function Trust() {
                 </div>
                 <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
                     {items.map(({ icon: Icon, label }) => (
-                        <div key={label} className="flex items-center justify-center gap-2 rounded-lg border p-4 text-sm font-medium">
+                        <div key={label} className="flex items-center justify-center gap-2 rounded border p-4 text-sm font-medium">
                             <Icon className="h-4 w-4" />
                             <span>{label}</span>
                         </div>

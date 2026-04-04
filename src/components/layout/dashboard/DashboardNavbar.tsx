@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "@/components/theme-toggle";
 import UserMenu from "@/modules/auth/components/UserMenu";
+import InstallPrompt from "@/components/ui/InstallPrompt";
 import { cn } from "@/lib/utils";
 
 const navItems = [
@@ -22,7 +23,7 @@ export default function DashboardNavbar() {
             <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center gap-6">
                     <Link href="/dashboard" className="text-lg font-semibold tracking-tight">
-                        EasyFollowup
+                        EasyFollowUp
                     </Link>
                     <nav className="hidden items-center gap-1 md:flex">
                         {navItems.map((item) => {
@@ -32,7 +33,7 @@ export default function DashboardNavbar() {
                                     key={item.href}
                                     href={item.href}
                                     className={cn(
-                                        "rounded-md px-3 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground",
+                                        "rounded px-3 py-2 text-sm font-medium text-muted-foreground transition hover:text-foreground",
                                         active && "bg-primary text-primary-foreground hover:text-primary-foreground"
                                     )}
                                 >
@@ -44,6 +45,7 @@ export default function DashboardNavbar() {
                 </div>
 
                 <div className="flex items-center gap-2">
+                    <InstallPrompt />
                     <ThemeToggle />
                     <UserMenu />
                 </div>
@@ -57,7 +59,7 @@ export default function DashboardNavbar() {
                             key={`mobile-${item.href}`}
                             href={item.href}
                             className={cn(
-                                "whitespace-nowrap rounded-md border px-3 py-1.5 text-xs font-medium text-muted-foreground",
+                                "whitespace-nowrap rounded border px-3 py-1.5 text-xs font-medium text-muted-foreground",
                                 active && "border-primary bg-primary text-primary-foreground"
                             )}
                         >

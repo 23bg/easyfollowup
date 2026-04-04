@@ -8,7 +8,7 @@ export default function LandingHeader() {
                 <nav className="hidden items-center gap-5 text-sm text-muted-foreground md:flex">
 
                     <Link href="/" className="text-base font-bold tracking-tight">
-                        LeadHub
+                        EasyFollowUp
                     </Link>
 
                     <Link href="/">Home</Link>

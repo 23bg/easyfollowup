@@ -1,0 +1,70 @@
+{
+  "name": "EasyFollowup",
+  "short_name": "Followup",
+  "description": "Simple CRM for managing leads and follow-ups",
+  "start_url": "/?source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait",
+
+  "theme_color": "#2563eb",
+  "background_color": "#ffffff",
+
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/maskable-icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+
+  "categories": ["business", "productivity"],
+
+  "screenshots": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Dashboard overview"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "label": "Leads management"
+    }
+  ],
+
+  "shortcuts": [
+    {
+      "name": "Add Lead",
+      "short_name": "Add",
+      "url": "/dashboard/leads/new",
+      "icons": [
+        {
+          "src": "/apple-touch-icon.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Follow-ups",
+      "short_name": "Follow-ups",
+      "url": "/dashboard/followups"
+    }
+ ]
+}

@@ -13,14 +13,14 @@ export default function Demo() {
                         <Link href="/contact">Request setup</Link>
                     </Button>
                 </div>
-                <div className="rounded-xl border bg-muted/20 p-3">
+                <div className="rounded border bg-muted/20 p-3">
                     <Image
                         src="/landing/demo-mock.svg"
                         alt="Public lead capture preview"
                         width={900}
                         height={620}
                         loading="lazy"
-                        className="h-auto w-full rounded-lg"
+                        className="h-auto w-full rounded"
                     />
                 </div>
             </div>

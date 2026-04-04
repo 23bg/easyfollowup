@@ -8,7 +8,7 @@ const activeLeadWhere = (instituteId?: string): Prisma.LeadWhereInput => ({
     ...(instituteId ? { instituteId } : {}),
 });
 
-export const leadhubRepository = {
+export const EasyFollowUpRepository = {
     async listLeads(input: {
         instituteId?: string;
         page: number;

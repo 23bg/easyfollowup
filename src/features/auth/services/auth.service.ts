@@ -33,7 +33,7 @@ const normalizeEmail = (email: string) => email.trim().toLowerCase();
 const generateOtpCode = (): string => crypto.randomInt(0, 100_000).toString().padStart(5, "0");
 
 const slugFromEmail = (email: string): string => {
-    const local = email.split("@")[0] || "leadhub-org";
+    const local = email.split("@")[0] || "EasyFollowUp-org";
     return local
         .toLowerCase()
         .replace(/[^a-z0-9\s-]/g, "")

@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: DirectoryPageProps): Promise<
     const decodedCity = decodeURIComponent(city);
 
     return {
-        title: `${decodedCategory} Leads in ${decodedCity} | LeadHub Directory`,
+        title: `${decodedCategory} Leads in ${decodedCity} | EasyFollowUp Directory`,
         description: `Browse ${decodedCategory} leads in ${decodedCity}.`,
     };
 }
@@ -38,7 +38,7 @@ export default async function DirectoryPage({ params }: DirectoryPageProps) {
 
             <div className="mt-6 grid gap-4 md:grid-cols-2">
                 {leads.map((lead) => (
-                    <article key={lead.id} className="rounded-lg border p-4">
+                    <article key={lead.id} className="rounded border p-4">
                         <h2 className="font-medium">{lead.name}</h2>
                         <p className="mt-1 text-sm text-muted-foreground">{lead.primaryPhone || "No phone"}</p>
                         <p className="text-sm text-muted-foreground">{lead.website || "No website"}</p>

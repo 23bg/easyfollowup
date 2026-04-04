@@ -15,7 +15,7 @@ type AppSettings = {
     leadActivityAlerts: boolean;
 };
 
-const SETTINGS_STORAGE_KEY = "leadhub:settings";
+const SETTINGS_STORAGE_KEY = "EasyFollowUp:settings";
 
 const defaultSettings: AppSettings = {
     compactTables: false,

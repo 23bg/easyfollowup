@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { readSessionFromCookie } from "@/lib/auth/auth";
 import { toAppError } from "@/lib/utils/error";
-import { leadhubService } from "@/features/leadhub/services/leadhub.service";
+import { EasyFollowUpService } from "@/features/EasyFollowUp/services/EasyFollowUp.service";
 
 type RouteContext = {
     params: Promise<{ id: string }>;
@@ -26,7 +26,7 @@ export async function GET(_req: NextRequest, context: RouteContext) {
         }
 
         const { id } = await context.params;
-        const data = await leadhubService.getLeadById(id, session.instituteId);
+        const data = await EasyFollowUpService.getLeadById(id, session.instituteId);
         return NextResponse.json({ success: true, data });
     } catch (error) {
         const appError = toAppError(error);
@@ -43,8 +43,8 @@ export async function PUT(req: NextRequest, context: RouteContext) {
 
         const { id } = await context.params;
         const body = await req.json();
-        await leadhubService.getLeadById(id, session.instituteId);
-        const data = await leadhubService.updateLead(id, body);
+        await EasyFollowUpService.getLeadById(id, session.instituteId);
+        const data = await EasyFollowUpService.updateLead(id, body);
         return NextResponse.json({ success: true, data });
     } catch (error) {
         const appError = toAppError(error);
@@ -60,8 +60,8 @@ export async function DELETE(_req: NextRequest, context: RouteContext) {
         }
 
         const { id } = await context.params;
-        await leadhubService.getLeadById(id, session.instituteId);
-        await leadhubService.deleteLead(id);
+        await EasyFollowUpService.getLeadById(id, session.instituteId);
+        await EasyFollowUpService.deleteLead(id);
         return NextResponse.json({ success: true, data: { deleted: true } });
     } catch (error) {
         const appError = toAppError(error);
@@ -86,7 +86,7 @@ export async function PATCH(req: NextRequest, context: RouteContext) {
         }
 
         const body = parsed.data;
-        const data = await leadhubService.updateLead(id, {
+        const data = await EasyFollowUpService.updateLead(id, {
             status: body.status,
             notes: body.message ?? undefined,
         });

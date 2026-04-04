@@ -7,7 +7,7 @@ export default function HowItWorks() {
                 <h2 className="text-2xl font-bold tracking-tight md:text-3xl">How It Works</h2>
                 <div className="mt-8 grid gap-4 md:grid-cols-4">
                     {steps.map((step, index) => (
-                        <div key={step} className="rounded-lg border p-4">
+                        <div key={step} className="rounded border p-4">
                             <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full border text-sm font-semibold">
                                 {index + 1}
                             </div>

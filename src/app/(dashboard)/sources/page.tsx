@@ -77,7 +77,7 @@ export default function LeadSourcesPage() {
             {loading ? (
                 <p className="mt-6 text-sm text-muted-foreground">Loading sources...</p>
             ) : (
-                <div className="mt-6 overflow-x-auto rounded-md border">
+                    <div className="mt-6 overflow-x-auto rounded border">
                     <table className="w-full text-left text-sm">
                         <thead className="border-b bg-muted/40">
                             <tr>
@@ -101,7 +101,7 @@ export default function LeadSourcesPage() {
                 </div>
             )}
 
-            <section className="mt-8 rounded-md border p-4">
+            <section className="mt-8 rounded border p-4">
                 <h2 className="text-lg font-semibold">Create Source Setup</h2>
                 <p className="mt-1 text-sm text-muted-foreground">Generate endpoint and embed snippet for capture integration.</p>
 

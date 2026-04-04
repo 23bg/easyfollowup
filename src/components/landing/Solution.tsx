@@ -13,7 +13,7 @@ export default function Solution() {
                 <h2 className="text-2xl font-bold tracking-tight md:text-3xl">One Lead Engine For Your Revenue Team</h2>
                 <ul className="mt-6 grid gap-3 md:grid-cols-2">
                     {solutions.map((item) => (
-                        <li key={item} className="rounded-lg border p-4 text-muted-foreground">
+                        <li key={item} className="rounded border p-4 text-muted-foreground">
                             {item}
                         </li>
                     ))}

@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
-    "migrate:leadhub": "ts-node scripts/migrate-oncampus-to-leadhub.ts"
+    "migrate:EasyFollowUp": "ts-node scripts/migrate-oncampus-to-EasyFollowUp.ts"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"
@@ -74,6 +74,7 @@
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",
     "xlsx": "^0.18.5",
+    "dexie": "^4.1.0",
     "zod": "^4.1.12"
   },
   "devDependencies": {

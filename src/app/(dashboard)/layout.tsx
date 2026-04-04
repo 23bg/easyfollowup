@@ -8,7 +8,7 @@ import { organizationService } from "@/features/organization/services/organizati
 export const metadata: Metadata = {
     title: "Dashboard",
     description:
-    "EasyFollowup Dashboard - Manage leads, follow-ups, team, and billing.",
+        "EasyFollowUp Dashboard - Manage leads, follow-ups, team, and billing.",
 };
 
 export default async function AppLayout({

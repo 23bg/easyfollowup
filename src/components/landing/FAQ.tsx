@@ -11,7 +11,7 @@ const faqs = [
         a: "Yes. Use manual entry, imports, public form endpoint, and source-based tracking.",
     },
     {
-        q: "Does LeadHub support lead scoring?",
+        q: "Does EasyFollowUp support lead scoring?",
         a: "Yes. New leads are scored so teams can prioritize high-intent prospects faster.",
     },
     {

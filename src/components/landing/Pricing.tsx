@@ -36,7 +36,7 @@ export default function Pricing() {
                             <p className="mb-4 text-sm font-medium text-muted-foreground">Includes:</p>
                             <ul className="grid gap-2 text-sm text-muted-foreground">
                                 {sharedItems.map((item) => (
-                                    <li key={`solo-${item}`} className="rounded-md border px-3 py-2">
+                                    <li key={`solo-${item}`} className="rounded border px-3 py-2">
                                         {item}
                                     </li>
                                 ))}
@@ -61,11 +61,11 @@ export default function Pricing() {
                             <p className="mb-4 text-sm font-medium text-muted-foreground">Includes:</p>
                             <ul className="grid gap-2 text-sm text-muted-foreground">
                                 {sharedItems.map((item) => (
-                                    <li key={`team-${item}`} className="rounded-md border px-3 py-2">
+                                    <li key={`team-${item}`} className="rounded border px-3 py-2">
                                         {item}
                                     </li>
                                 ))}
-                                <li className="rounded-md border px-3 py-2">Team collaboration (up to 5 users)</li>
+                                <li className="rounded border px-3 py-2">Team collaboration (up to 5 users)</li>
                             </ul>
                         </CardContent>
                         <CardFooter>
@@ -79,7 +79,7 @@ export default function Pricing() {
                 <div className="mt-10 grid gap-3">
                     <h3 className="text-lg font-semibold">Frequently asked questions</h3>
                     {faqs.map((item) => (
-                        <div key={item.q} className="rounded-md border p-3">
+                        <div key={item.q} className="rounded border p-3">
                             <p className="font-medium">{item.q}</p>
                             <p className="text-sm text-muted-foreground mt-1">{item.a}</p>
                         </div>

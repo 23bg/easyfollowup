@@ -1,22 +1,25 @@
 ﻿import type { Metadata } from "next";
-import "@/styles/globals.css";
+import "./globals.css";
 import { ReduxProvider } from "@/providers/ReduxProvider";
 import NextTopLoader from "nextjs-toploader";
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/providers/theme-provider";
-import { Inter } from "next/font/google";
+import { Geist } from "next/font/google";
+import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
+import NetworkBanner from "@/components/NetworkBanner";
+import PersistentStorageRequester from "@/components/pwa/PersistentStorageRequester";
 
-export const inter = Inter({
+export const geist = Geist({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-geist",
   display: "swap",
 });
 
 
 export const metadata: Metadata = {
-  title: "LeadHub - Universal Lead Intelligence Platform",
+  title: "EasyFollowUp - Universal Lead Intelligence Platform",
   description:
-    "LeadHub helps teams collect, track, and convert leads across products and industries.",
+    "EasyFollowUp helps teams collect, track, and convert leads across products and industries.",
 };
 
 // ensureInitialUser();
@@ -28,11 +31,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#2563eb" />
+      </head>
       <body
-        className={`${inter.variable} font-sans antialiased`}
+        className={`${geist.variable} font-sans antialiased`}
       >
         <ThemeProvider>
           <ReduxProvider>
+            <ServiceWorkerRegister />
+            <PersistentStorageRequester />
+            <NetworkBanner />
             <NextTopLoader
               showSpinner={false}
               color="#111111"

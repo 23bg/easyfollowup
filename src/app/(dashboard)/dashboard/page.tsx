@@ -31,10 +31,10 @@ export default function DashboardPage() {
         const load = async () => {
             try {
                 const [allRes, newRes, contactedRes, customerRes] = await Promise.all([
-                    api.get(API.LEADHUB.LEADS, { params: { page: 1, pageSize: 5 } }),
-                    api.get(API.LEADHUB.LEADS, { params: { page: 1, pageSize: 1, status: "NEW" } }),
-                    api.get(API.LEADHUB.LEADS, { params: { page: 1, pageSize: 1, status: "CONTACTED" } }),
-                    api.get(API.LEADHUB.LEADS, { params: { page: 1, pageSize: 1, status: "CUSTOMER" } }),
+                    api.get(API.EasyFollowUp.LEADS, { params: { page: 1, pageSize: 5 } }),
+                    api.get(API.EasyFollowUp.LEADS, { params: { page: 1, pageSize: 1, status: "NEW" } }),
+                    api.get(API.EasyFollowUp.LEADS, { params: { page: 1, pageSize: 1, status: "CONTACTED" } }),
+                    api.get(API.EasyFollowUp.LEADS, { params: { page: 1, pageSize: 1, status: "CUSTOMER" } }),
                 ]);
 
                 const allData = allRes.data?.data;

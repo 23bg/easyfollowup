@@ -5,8 +5,8 @@ const config: Config = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ["var(--font-inter)", "sans-serif"],
-                heading: ["var(--font-inter)", "sans-serif"],
+                sans: ["var(--font-geist)", "sans-serif"],
+                heading: ["var(--font-geist)", "sans-serif"],
             },
         },
     },

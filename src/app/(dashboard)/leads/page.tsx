@@ -211,7 +211,7 @@ export default function LeadsPage() {
     const loadLeads = async (targetPage = page) => {
         setLoading(true);
         try {
-            const response = await api.get(API.LEADHUB.LEADS, {
+            const response = await api.get(API.EasyFollowUp.LEADS, {
                 params: {
                     page: targetPage,
                     pageSize: PAGE_SIZE,
@@ -363,11 +363,11 @@ export default function LeadsPage() {
         setSaving(true);
         try {
             if (mode === "create") {
-                await api.post(API.LEADHUB.LEADS, payload);
+                await api.post(API.EasyFollowUp.LEADS, payload);
                 toast.success("Lead added.");
                 setCreateOpen(false);
             } else if (activeLead) {
-                await api.put(API.LEADHUB.LEAD_BY_ID(activeLead.id), payload);
+                await api.put(API.EasyFollowUp.LEAD_BY_ID(activeLead.id), payload);
                 toast.success("Lead updated.");
                 setEditOpen(false);
             }
@@ -390,7 +390,7 @@ export default function LeadsPage() {
 
         setSaving(true);
         try {
-            await api.put(API.LEADHUB.LEAD_BY_ID(activeLead.id), { notes: nextNotes });
+            await api.put(API.EasyFollowUp.LEAD_BY_ID(activeLead.id), { notes: nextNotes });
             toast.success("Note added.");
             setNoteOpen(false);
             await loadLeads();
@@ -413,7 +413,7 @@ export default function LeadsPage() {
             });
 
             if (contactStatus !== "KEEP") {
-                await api.put(API.LEADHUB.LEAD_BY_ID(activeLead.id), { status: contactStatus });
+                await api.put(API.EasyFollowUp.LEAD_BY_ID(activeLead.id), { status: contactStatus });
             }
 
             toast.success("Contact log saved.");
@@ -432,7 +432,7 @@ export default function LeadsPage() {
 
         setSaving(true);
         try {
-            await api.delete(API.LEADHUB.LEAD_BY_ID(lead.id));
+            await api.delete(API.EasyFollowUp.LEAD_BY_ID(lead.id));
             toast.success("Lead deleted.");
             await loadLeads();
             setSelectedIds((prev) => prev.filter((id) => id !== lead.id));
@@ -454,7 +454,7 @@ export default function LeadsPage() {
             await Promise.all(
                 selectedLeads.map((lead) => {
                     const tags = Array.from(new Set([...(lead.tags ?? []), bulkTag.trim()]));
-                    return api.put(API.LEADHUB.LEAD_BY_ID(lead.id), { tags });
+                    return api.put(API.EasyFollowUp.LEAD_BY_ID(lead.id), { tags });
                 })
             );
             toast.success("Tag applied to selected leads.");
@@ -511,7 +511,7 @@ export default function LeadsPage() {
 
         setSaving(true);
         try {
-            await Promise.all(selectedLeads.map((lead) => api.delete(API.LEADHUB.LEAD_BY_ID(lead.id))));
+            await Promise.all(selectedLeads.map((lead) => api.delete(API.EasyFollowUp.LEAD_BY_ID(lead.id))));
             toast.success("Selected leads deleted.");
             setSelectedIds([]);
             await loadLeads();
@@ -557,7 +557,7 @@ export default function LeadsPage() {
 
         setImporting(true);
         try {
-            const response = await api.post(API.LEADHUB.LEADS, normalizedRows);
+            const response = await api.post(API.EasyFollowUp.LEADS, normalizedRows);
             const importedCount = Number(response?.data?.data?.imported ?? 0);
             const failedCount = Number(response?.data?.data?.failed ?? 0);
             const firstError = response?.data?.data?.errors?.[0]?.message as string | undefined;
@@ -650,7 +650,7 @@ export default function LeadsPage() {
 
         setMapsImporting(true);
         try {
-            const response = await api.post(API.LEADHUB.MAPS_IMPORT, {
+            const response = await api.post(API.EasyFollowUp.MAPS_IMPORT, {
                 query: mapsQuery.trim(),
                 city: mapsCity.trim() || undefined,
                 category: mapsCategory.trim() || undefined,
@@ -721,12 +721,12 @@ export default function LeadsPage() {
                 }}>Reset Filters</Button>
             </div>
 
-            <details className="mt-4 rounded-md border p-3 text-sm">
+            <details className="mt-4 rounded border p-3 text-sm">
                 <summary className="cursor-pointer font-medium">Supported import table columns (CSV/XLSX/JSON)</summary>
                 <p className="mt-2 text-xs text-muted-foreground">
                     Required fields: file import requires <strong>name</strong>. Google Maps import requires <strong>query</strong>.
                 </p>
-                <div className="mt-3 overflow-x-auto rounded-md border">
+                <div className="mt-3 overflow-x-auto rounded border">
                     <table className="w-full text-left text-xs">
                         <thead className="border-b bg-muted/40">
                             <tr>
@@ -750,17 +750,17 @@ export default function LeadsPage() {
                 </div>
             </details>
 
-            <details className="mt-3 rounded-md border p-3 text-sm">
+            <details className="mt-3 rounded border p-3 text-sm">
                 <summary className="cursor-pointer font-medium">Simple data examples for import</summary>
                 <p className="mt-2 text-xs text-muted-foreground">
                     Minimum required in file import: <strong>name</strong>. Optional columns can be included as needed.
                 </p>
                 <p className="mt-3 text-xs font-medium">CSV example</p>
-                <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-2 text-[11px] leading-5">{sampleCsvImportData}</pre>
+                <pre className="mt-1 overflow-x-auto rounded bg-muted p-2 text-[11px] leading-5">{sampleCsvImportData}</pre>
                 <p className="mt-3 text-xs font-medium">JSON example</p>
-                <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-2 text-[11px] leading-5">{sampleJsonImportData}</pre>
+                <pre className="mt-1 overflow-x-auto rounded bg-muted p-2 text-[11px] leading-5">{sampleJsonImportData}</pre>
                 <p className="mt-3 text-xs font-medium">Google Maps import (required)</p>
-                <pre className="mt-1 overflow-x-auto rounded-md bg-muted p-2 text-[11px] leading-5">{"{\"query\": \"coaching institutes\", \"city\": \"Pune\", \"category\": \"Education\"}"}</pre>
+                <pre className="mt-1 overflow-x-auto rounded bg-muted p-2 text-[11px] leading-5">{"{\"query\": \"coaching institutes\", \"city\": \"Pune\", \"category\": \"Education\"}"}</pre>
             </details>
 
             <div className="mt-4 flex flex-wrap items-center gap-2 text-sm">
@@ -771,7 +771,7 @@ export default function LeadsPage() {
             </div>
 
             {selectedIds.length > 0 && (
-                <div className="mt-4 rounded-md border p-3">
+                <div className="mt-4 rounded border p-3">
                     <div className="flex flex-wrap items-center gap-2">
                         <Input value={bulkTag} onChange={(e) => setBulkTag(e.target.value)} placeholder="Tag to add" className="max-w-xs" />
                         <Button variant="outline" onClick={applyBulkTag} disabled={saving}>Add tag</Button>
@@ -786,7 +786,7 @@ export default function LeadsPage() {
             ) : !filteredItems.length ? (
                 <p className="mt-6 text-sm text-muted-foreground">No leads found.</p>
             ) : (
-                <div className="mt-6 overflow-x-auto rounded-md border">
+                        <div className="mt-6 overflow-x-auto rounded border">
                     <table className="w-full text-left text-sm">
                         <thead className="border-b bg-muted/40">
                             <tr>
@@ -1051,7 +1051,7 @@ export default function LeadsPage() {
                         </DialogDescription>
                     </DialogHeader>
 
-                    <div className="rounded-md border">
+                    <div className="rounded border">
                         <div className="flex flex-wrap items-center gap-2 border-b bg-muted/40 px-3 py-2 text-xs">
                             <Badge variant="outline">Rows detected: {pendingImportRows.length}</Badge>
                             <Badge variant="outline">Columns shown: {pendingImportHeaders.length}</Badge>

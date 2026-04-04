@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { readSessionFromCookie } from "@/lib/auth/auth";
 import { toAppError } from "@/lib/utils/error";
-import { leadhubService } from "@/features/leadhub/services/leadhub.service";
+import { EasyFollowUpService } from "@/features/EasyFollowUp/services/EasyFollowUp.service";
 
 type RouteContext = {
     params: Promise<{ id: string }>;
@@ -16,7 +16,7 @@ export async function PUT(req: NextRequest, context: RouteContext) {
 
         const { id } = await context.params;
         const body = await req.json();
-        const data = await leadhubService.updateLeadProduct(id, body);
+        const data = await EasyFollowUpService.updateLeadProduct(id, body);
         return NextResponse.json({ success: true, data });
     } catch (error) {
         const appError = toAppError(error);
@@ -32,7 +32,7 @@ export async function DELETE(_req: NextRequest, context: RouteContext) {
         }
 
         const { id } = await context.params;
-        await leadhubService.deleteLeadProduct(id);
+        await EasyFollowUpService.deleteLeadProduct(id);
         return NextResponse.json({ success: true, data: { deleted: true } });
     } catch (error) {
         const appError = toAppError(error);

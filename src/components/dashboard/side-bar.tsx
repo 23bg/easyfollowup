@@ -119,7 +119,7 @@ export function DashboardAppSidebar({ ...props }: React.ComponentProps<typeof Si
                                         <span className="text-xl font-semibold text-primary"></span>) : (
                                         <div className="flex items-center gap-2">
 
-                                            <span className="text-xl font-semibold text-primary">LeadHub</span>
+                                                <span className="text-xl font-semibold text-primary">EasyFollowUp</span>
                                         </div>
                                     )}
                                 </Link>

@@ -62,7 +62,7 @@ export default function BillingPage() {
         <main className="space-y-4 py-2">
             <div>
                 <h1 className="text-2xl font-semibold">Billing</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Manage your EasyFollowup subscription and plan limits.</p>
+                <p className="mt-1 text-sm text-muted-foreground">Manage your EasyFollowUp subscription and plan limits.</p>
             </div>
 
             <Card>

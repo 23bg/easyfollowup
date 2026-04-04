@@ -31,7 +31,7 @@ export default function TeamTable({ rows, canManage, onEdit, onDelete }: TeamTab
     };
 
     return (
-        <div className="mt-4 rounded-md border">
+        <div className="mt-4 rounded border">
             <Table>
                 <TableHeader>
                     <TableRow>

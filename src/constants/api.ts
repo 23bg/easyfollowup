@@ -7,7 +7,7 @@
         FOLLOWUP: '/followup',
         SUBSCRIPTION: '/subscription',
     },
-    LEADHUB: {
+    EasyFollowUp: {
         LEADS: '/leads',
         LEAD_BY_ID: (id: string) => `/leads/${id}`,
         MAPS_IMPORT: '/maps-import',

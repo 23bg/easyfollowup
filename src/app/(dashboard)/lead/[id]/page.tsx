@@ -39,7 +39,7 @@ export default function LeadDetailsPage() {
         if (!params?.id) return;
         try {
             const [leadRes, productsRes] = await Promise.all([
-                api.get(API.LEADHUB.LEAD_BY_ID(params.id)),
+                api.get(API.EasyFollowUp.LEAD_BY_ID(params.id)),
                 api.get("/api/products"),
             ]);
             setLead(leadRes.data?.data ?? null);

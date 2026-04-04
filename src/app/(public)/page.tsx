@@ -13,9 +13,9 @@ import Footer from "@/components/landing/Footer";
 import LandingHeader from "@/components/landing/Header";
 
 export const metadata: Metadata = {
-    title: "LeadHub - Build Your Lead Engine",
+    title: "EasyFollowUp - Build Your Lead Engine",
     description:
-        "LeadHub helps growth teams capture, qualify, and convert leads with source intelligence and automation.",
+        "EasyFollowUp helps growth teams capture, qualify, and convert leads with source intelligence and automation.",
 };
 
 export default function LandingPage() {

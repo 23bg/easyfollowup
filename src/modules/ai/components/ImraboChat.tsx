@@ -60,7 +60,7 @@ export default function ImraboChat() {
                     {messages.map((message) => (
                         <div
                             key={message.id}
-                            className={`rounded-lg px-3 py-2 text-sm ${message.role === "assistant"
+                            className={`rounded px-3 py-2 text-sm ${message.role === "assistant"
                                     ? "bg-muted text-foreground"
                                     : "bg-primary text-primary-foreground ml-8"
                                 }`}

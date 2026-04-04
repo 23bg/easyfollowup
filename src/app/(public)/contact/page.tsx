@@ -16,15 +16,15 @@ export default function ContactPage() {
                 <p className="mt-3 text-muted-foreground">Need help with setup, billing, or product questions? Reach us anytime.</p>
 
                 <div className="mt-8 grid gap-4 md:grid-cols-3">
-                    <div className="rounded-xl border p-5">
+                    <div className="rounded border p-5">
                         <p className="text-sm text-muted-foreground">Email</p>
                         <p className="mt-1 font-medium">support@oncampus.app</p>
                     </div>
-                    <div className="rounded-xl border p-5">
+                    <div className="rounded border p-5">
                         <p className="text-sm text-muted-foreground">WhatsApp</p>
                         <p className="mt-1 font-medium">+91 90000 00000</p>
                     </div>
-                    <div className="rounded-xl border p-5">
+                    <div className="rounded border p-5">
                         <p className="text-sm text-muted-foreground">Support Hours</p>
                         <p className="mt-1 font-medium">Mon-Sat, 10:00 AM - 7:00 PM</p>
                     </div>

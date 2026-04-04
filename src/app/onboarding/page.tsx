@@ -162,7 +162,7 @@ export default function OnboardingIndexPage() {
             <div className="w-full max-w-3xl space-y-6">
                 <div className="text-center space-y-2">
                     <p className="text-sm font-medium text-primary">Step 1 of 2 — Organization Setup</p>
-                    <h1 className="text-3xl font-bold tracking-tight">Set Up Your LeadHub Workspace</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Set Up Your EasyFollowUp Workspace</h1>
                     <p className="text-muted-foreground">Complete organization details and create your first source before entering dashboard.</p>
                 </div>
 
@@ -175,12 +175,12 @@ export default function OnboardingIndexPage() {
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-2">
                                 <Label htmlFor="name">Organization Name *</Label>
-                                <Input id="name" value={form.name} onChange={(e) => setValue("name", e.target.value)} placeholder="e.g. LeadHub Systems" />
+                                <Input id="name" value={form.name} onChange={(e) => setValue("name", e.target.value)} placeholder="e.g. EasyFollowUp Systems" />
                                 {errors.name && <p className="text-sm text-destructive">{errors.name}</p>}
                             </div>
                             <div className="space-y-2">
                                 <Label htmlFor="slug">Workspace Slug *</Label>
-                                <Input id="slug" value={form.slug} onChange={(e) => setValue("slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))} placeholder="e.g. leadhub-systems" />
+                                <Input id="slug" value={form.slug} onChange={(e) => setValue("slug", e.target.value.toLowerCase().replace(/\s+/g, "-"))} placeholder="e.g. EasyFollowUp-systems" />
                                 {errors.slug && <p className="text-sm text-destructive">{errors.slug}</p>}
                             </div>
                             <div className="space-y-2">
@@ -257,7 +257,7 @@ export default function OnboardingIndexPage() {
                         </Button>
 
                         {sourceSetup && (
-                            <div className="space-y-3 rounded-md border p-3">
+                            <div className="space-y-3 rounded border p-3">
                                 <p className="text-sm"><strong>Endpoint:</strong> {sourceSetup.endpoint}</p>
                                 <div className="space-y-2">
                                     <Label>Embed Snippet</Label>

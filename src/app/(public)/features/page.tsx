@@ -49,7 +49,7 @@ export default function FeaturesPage() {
 
                 <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                     {featureSections.map((section) => (
-                        <section key={section.title} className="rounded-xl border bg-muted/20 p-5">
+                        <section key={section.title} className="rounded border bg-muted/20 p-5">
                             <h2 className="text-lg font-semibold">{section.title}</h2>
                             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
                                 {section.items.map((item) => (

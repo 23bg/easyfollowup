@@ -54,7 +54,7 @@ export default function ContactLogsPage() {
                         type: typeFilter !== "ALL" ? typeFilter : undefined,
                     },
                 }),
-                api.get(API.LEADHUB.LEADS, { params: { page: 1, pageSize: 100 } }),
+                api.get(API.EasyFollowUp.LEADS, { params: { page: 1, pageSize: 100 } }),
             ]);
 
             setItems(logsResponse.data?.data?.items ?? []);
@@ -98,7 +98,7 @@ export default function ContactLogsPage() {
             <h1 className="text-2xl font-semibold">Contact Logs</h1>
             <p className="mt-1 text-sm text-muted-foreground">Track calls, emails, WhatsApp, demos, and meetings across leads.</p>
 
-            <section className="mt-6 rounded-md border p-4">
+            <section className="mt-6 rounded border p-4">
                 <h2 className="text-lg font-semibold">Log Contact Activity</h2>
                 <div className="mt-4 grid gap-3 md:grid-cols-2">
                     <div>
@@ -154,7 +154,7 @@ export default function ContactLogsPage() {
                 ) : !items.length ? (
                     <p className="mt-4 text-sm text-muted-foreground">No contact logs found.</p>
                 ) : (
-                    <div className="mt-4 overflow-x-auto rounded-md border">
+                            <div className="mt-4 overflow-x-auto rounded border">
                         <table className="w-full text-left text-sm">
                             <thead className="border-b bg-muted/40">
                                 <tr>
