@@ -14,10 +14,11 @@ import {
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { permissionsManager } from "@/lib/permissions";
+import type { PermissionStatusValue } from "@/lib/permissions";
 
 type PermissionsCenterProps = {
-    notificationPermission: NotificationPermission | "unsupported";
-    onRequestNotifications: () => Promise<NotificationPermission | "unsupported">;
+    notificationPermission: PermissionStatusValue;
+    onRequestNotifications: () => Promise<PermissionStatusValue>;
     onRequestPersistentStorage: () => Promise<boolean>;
     hasPersistentStorage: boolean;
 };

@@ -23,7 +23,7 @@ export type ResponsiveTableAction<T> = {
     onClick: (row: T) => void;
 };
 
-type ResponsiveTableProps<T> = {
+export type ResponsiveTableProps<T> = {
     data: T[];
     columns: ResponsiveTableColumn<T>[];
     getRowKey: (row: T) => string;

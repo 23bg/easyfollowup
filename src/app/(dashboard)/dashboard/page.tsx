@@ -9,11 +9,11 @@ import api from "@/lib/axios";
 import { API } from "@/constants/api";
 import { Loader2, UserPlus, PhoneCall, Trophy } from "lucide-react";
 import Section from "@/components/ui/section";
-import type { ResponsiveTableColumn } from "@/components/tables/ResponsiveTable";
+import type { ResponsiveTableColumn, ResponsiveTableProps } from "@/components/tables/ResponsiveTable";
 import { Grid, Stack } from "@/components/ui/layout-primitives";
 import LoadingState from "@/components/ui/loading-state";
 
-const ResponsiveTable = dynamic(() => import("@/components/tables/ResponsiveTable"), {
+const ResponsiveTable = dynamic<ResponsiveTableProps<Metrics["recentLeads"][number]>>(() => import("@/components/tables/ResponsiveTable"), {
     loading: () => <LoadingState showSkeleton className="py-2" />,
 });
 

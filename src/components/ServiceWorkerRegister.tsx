@@ -16,9 +16,9 @@ export default function ServiceWorkerRegister() {
         registration = await navigator.serviceWorker.register('/sw.js');
         await navigator.serviceWorker.register('/firebase-messaging-sw.js');
 
-        if ('sync' in registration) {
+        if (registration && 'sync' in registration && (registration as any).sync?.register) {
           try {
-            await registration.sync.register('easyfollowup-sync-queue');
+            await (registration as any).sync.register('easyfollowup-sync-queue');
           } catch {
             // Background sync is best-effort.
           }
