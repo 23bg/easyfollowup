@@ -3,8 +3,8 @@ import LandingHeader from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-    title: "Contact - OnCampus",
-    description: "Contact OnCampus support and sales.",
+    title: "Contact - EasyFollowUp",
+    description: "Contact EasyFollowUp support and sales.",
 };
 
 export default function ContactPage() {
@@ -18,7 +18,7 @@ export default function ContactPage() {
                 <div className="mt-8 grid gap-4 md:grid-cols-3">
                     <div className="rounded border p-5">
                         <p className="text-sm text-muted-foreground">Email</p>
-                        <p className="mt-1 font-medium">support@oncampus.app</p>
+                        <p className="mt-1 font-medium">support@easyfollowup.pro</p>
                     </div>
                     <div className="rounded border p-5">
                         <p className="text-sm text-muted-foreground">WhatsApp</p>

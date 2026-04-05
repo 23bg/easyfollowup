@@ -1,19 +1,22 @@
 "use client";
 
 import { useEffect, useState } from 'react';
+import { getNetworkManager } from '@/lib/network/manager';
 
 export default function useNetworkStatus() {
-  const [online, setOnline] = useState(typeof navigator !== 'undefined' ? navigator.onLine : true);
+  const [online, setOnline] = useState<boolean>(true);
 
   useEffect(() => {
-    const onOnline = () => setOnline(true);
-    const onOffline = () => setOnline(false);
-    window.addEventListener('online', onOnline);
-    window.addEventListener('offline', onOffline);
-    return () => {
-      window.removeEventListener('online', onOnline);
-      window.removeEventListener('offline', onOffline);
-    };
+    const manager = getNetworkManager();
+    const initialState = manager.getState();
+    setOnline(initialState.isOnline);
+
+    // Subscribe to network state changes
+    const unsubscribe = manager.subscribe((state) => {
+      setOnline(state.isOnline);
+    });
+
+    return unsubscribe;
   }, []);
 
   return online;

@@ -3,8 +3,8 @@ import LandingHeader from "@/components/landing/Header";
 import Footer from "@/components/landing/Footer";
 
 export const metadata: Metadata = {
-    title: "Features - OnCampus",
-    description: "Explore OnCampus features for leads, students, fees, payments, and institute public pages.",
+    title: "Features - EasyFollowUp",
+    description: "Explore EasyFollowUp features for leads, students, fees, payments, and institute public pages.",
 };
 
 const featureSections = [
@@ -43,7 +43,7 @@ export default function FeaturesPage() {
                     <p className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Features</p>
                     <h1 className="text-3xl font-bold tracking-tight md:text-4xl">Everything your institute needs to run daily operations.</h1>
                     <p className="max-w-3xl text-muted-foreground">
-                        OnCampus helps coaching institutes capture enquiries, manage students, track fees, and monitor collections in one place.
+                        EasyFollowUp helps coaching institutes capture enquiries, manage students, track fees, and monitor collections in one place.
                     </p>
                 </div>
 

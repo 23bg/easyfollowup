@@ -1,4 +1,4 @@
-# OnCampus Master Test Case Suite + Pre-Release Playbook (Senior QA)
+# EasyFollowUp Master Test Case Suite + Pre-Release Playbook (Senior QA)
 
 ## 1) Quality gate and release policy
 
@@ -498,7 +498,7 @@ Required:
 
 Discovery method:
 
-- Submit `https://oncampus.in/sitemap.xml` once in GSC
+- Submit `https://easyfollowup.in/sitemap.xml` once in GSC
 - Ensure new onboarded slugs are auto-added to sitemap
 - Re-crawl follows sitemap updates
 

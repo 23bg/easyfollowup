@@ -1,4 +1,4 @@
-# OnCampus Automated Testing Stack (Recommended)
+# EasyFollowUp Automated Testing Stack (Recommended)
 
 ## 1) Package selection (appropriate for this codebase)
 

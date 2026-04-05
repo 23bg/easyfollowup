@@ -48,7 +48,7 @@ const getTransporter = (): nodemailer.Transporter => {
 
 const renderOtpEmailHtml = (otp: string, expiryMinutes: number): string => `
   <div style="font-family:Arial,sans-serif;max-width:560px;margin:0 auto;padding:24px;border:1px solid #e5e7eb;border-radius:12px;">
-    <h2 style="margin:0 0 12px;">Your OnCampus OTP</h2>
+    <h2 style="margin:0 0 12px;">Your EasyFollowUp OTP</h2>
     <p style="margin:0 0 16px;color:#4b5563;">Use the OTP below to continue sign in.</p>
     <div style="font-size:32px;font-weight:700;letter-spacing:8px;margin:16px 0;color:#111827;">${otp}</div>
     <p style="margin:0;color:#6b7280;">This OTP expires in ${expiryMinutes} minutes.</p>
@@ -67,7 +67,7 @@ export const mailerService = {
         const message = {
             from: env.SMTP_FROM,
             to: input.email,
-            subject: "Your OnCampus OTP",
+            subject: "Your EasyFollowUp OTP",
             text: `Your OTP is ${input.otp}. It expires in ${env.OTP_EXPIRY_MINUTES} minutes.`,
             html: renderOtpEmailHtml(input.otp, env.OTP_EXPIRY_MINUTES),
         };

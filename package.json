@@ -1,5 +1,5 @@
 {
-  "name": "oncampus",
+  "name": "easyfollowup",
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.12.1",
@@ -14,7 +14,7 @@
     "test:e2e": "playwright test",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:report": "playwright show-report",
-    "migrate:EasyFollowUp": "ts-node scripts/migrate-oncampus-to-EasyFollowUp.ts"
+    "migrate:EasyFollowUp": "ts-node scripts/migrate-easyfollowup-to-EasyFollowUp.ts"
   },
   "prisma": {
     "schema": "src/prisma/schema.prisma"

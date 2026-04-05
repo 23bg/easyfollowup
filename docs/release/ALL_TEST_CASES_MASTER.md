@@ -1,4 +1,4 @@
-# OnCampus All Test Cases Master List (Automation + Manual)
+# EasyFollowUp All Test Cases Master List (Automation + Manual)
 
 This is the exhaustive test inventory for this application, mapped to the recommended stack.
 

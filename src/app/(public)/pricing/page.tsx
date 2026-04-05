@@ -5,7 +5,7 @@ import Footer from "../../../components/landing/Footer";
 import LandingHeader from "@/components/landing/Header";
 
 export const metadata: Metadata = {
-    title: "Pricing - OnCampus",
+    title: "Pricing - EasyFollowUp",
     description: "Simple plans for coaching institutes: Solo ₹499/month or Team ₹999/month.",
 };
 

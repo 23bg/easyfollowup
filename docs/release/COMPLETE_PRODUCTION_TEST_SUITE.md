@@ -1,6 +1,6 @@
 # COMPLETE PRODUCTION SAAS TEST SUITE — ONCAMPUS
 
-This document defines full pre-release behavioral test cases for OnCampus.
+This document defines full pre-release behavioral test cases for EasyFollowUp.
 
 - Scope: behavior only (no code quality review)
 - Target: 90%+ feature coverage
