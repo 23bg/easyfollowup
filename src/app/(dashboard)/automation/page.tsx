@@ -5,6 +5,9 @@ import api from "@/lib/axios";
 import { API } from "@/constants/api";
 import { toast } from "sonner";
 import { Switch } from "@/components/ui/switch";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
+import { Stack } from "@/components/ui/layout-primitives";
 
 type AutomationItem = {
     key: "autoReplyEnabled" | "leadWhatsappEnabled";
@@ -48,31 +51,35 @@ export default function AutomationPage() {
     };
 
     return (
-        <main className="p-6">
-            <h1 className="text-2xl font-semibold">Automation</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Enable workflow automations for faster first response.</p>
+        <Container className="py-4 md:py-6 lg:py-8">
+            <Stack>
+                <PageHeader
+                    title="Automation"
+                    description="Enable workflow automations for faster first response."
+                />
 
-            {loading ? (
-                <p className="mt-6 text-sm text-muted-foreground">Loading automations...</p>
-            ) : (
-                <div className="mt-6 grid gap-4">
-                    {items.map((item) => (
-                        <div key={item.key} className="rounded border p-4">
-                            <div className="flex items-center justify-between gap-3">
-                                <div>
-                                    <h2 className="font-semibold">{item.title}</h2>
-                                    <p className="text-sm text-muted-foreground mt-1">{item.description}</p>
+                {loading ? (
+                    <p className="text-sm text-muted-foreground">Loading automations...</p>
+                ) : (
+                        <div className="grid gap-4">
+                            {items.map((item) => (
+                                <div key={item.key} className="rounded border p-4">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div>
+                                            <h2 className="font-semibold">{item.title}</h2>
+                                        <p className="mt-1 text-sm text-muted-foreground">{item.description}</p>
+                                    </div>
+                                    <Switch
+                                        checked={item.enabled}
+                                        onCheckedChange={(enabled) => update(item.key, enabled)}
+                                        disabled={savingKey === item.key}
+                                    />
                                 </div>
-                                <Switch
-                                    checked={item.enabled}
-                                    onCheckedChange={(enabled) => update(item.key, enabled)}
-                                    disabled={savingKey === item.key}
-                                />
                             </div>
-                        </div>
-                    ))}
-                </div>
-            )}
-        </main>
+                        ))}
+                    </div>
+                )}
+            </Stack>
+        </Container>
     );
 }

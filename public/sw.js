@@ -6,7 +6,7 @@
    - navigation: network-first with offline fallback
 */
 
-const CACHE_NAME = 'easyfollowup-v1';
+const CACHE_NAME = 'easyfollowup-v2';
 const PRECACHE_URLS = ['/', '/offline'];
 
 self.addEventListener('install', (event) => {
@@ -55,18 +55,18 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // API requests: stale-while-revalidate
+  // API requests: network-first with cache fallback
   if (isApiRequest(request)) {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
-        const cached = await cache.match(request);
-        const networkFetch = fetch(request)
-          .then((res) => {
-            if (res && res.ok) cache.put(request, res.clone());
-            return res;
-          })
-          .catch(() => null);
-        return cached || (await networkFetch) || new Response(null, { status: 503 });
+        try {
+          const networkRes = await fetch(request);
+          if (networkRes && networkRes.ok) cache.put(request, networkRes.clone());
+          return networkRes;
+        } catch (error) {
+          const cached = await cache.match(request);
+          return cached || new Response(null, { status: 503 });
+        }
       })
     );
     return;
@@ -104,4 +104,58 @@ self.addEventListener('message', (event) => {
   if (event.data.type === 'SKIP_WAITING') {
     self.skipWaiting();
   }
+
+  if (event.data.type === 'SHOW_LOCAL_NOTIFICATION') {
+    const payload = event.data.payload || {};
+    const title = payload.title || 'EasyFollowUp';
+    const body = payload.body || '';
+
+    event.waitUntil(
+      self.registration.showNotification(title, {
+        body,
+        tag: payload.tag,
+        renotify: true,
+        icon: payload.icon || '/icons/icon-192.png',
+        badge: payload.badge || '/icons/icon-192.png',
+        data: { url: payload.url || '/' },
+        vibrate: payload.vibrate,
+        silent: payload.silent,
+      })
+    );
+  }
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  const url = event.notification?.data?.url || '/';
+
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((windowClients) => {
+      const existingClient = windowClients.find((client) => 'focus' in client);
+      if (existingClient) {
+        existingClient.postMessage({ type: 'NOTIFICATION_CLICK', url });
+        return existingClient.focus();
+      }
+
+      if (clients.openWindow) {
+        return clients.openWindow(url);
+      }
+
+      return undefined;
+    })
+  );
+});
+
+self.addEventListener('sync', (event) => {
+  if (event.tag !== 'easyfollowup-sync-queue') return;
+
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(async (cache) => {
+      try {
+        await cache.add('/api/leads');
+      } catch (error) {
+        // Keep sync best-effort only.
+      }
+    })
+  );
 });

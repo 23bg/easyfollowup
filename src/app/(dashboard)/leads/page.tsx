@@ -1,6 +1,6 @@
 "use client";
 
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import api from "@/lib/axios";
 import { API } from "@/constants/api";
 import { toast } from "sonner";
@@ -26,6 +26,11 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
+import { useNotifications } from "@/hooks/useNotifications";
+import { useRealtimeLeads } from "@/hooks/useRealtimeLeads";
+import { notifyLeadCreated, notifyLeadStatusChanged } from "@/lib/notifications/local";
 
 type LeadItem = {
     id: string;
@@ -207,6 +212,38 @@ export default function LeadsPage() {
     const [mapsCategory, setMapsCategory] = useState("");
     const [mapsImporting, setMapsImporting] = useState(false);
     const [saving, setSaving] = useState(false);
+    const notifications = useNotifications({ autoInitMessaging: true });
+
+    const handleRealtimeLeadCreated = useCallback((lead: { id: string; name?: string; status?: string }) => {
+        if (!notifications.isActive) return;
+        void notifyLeadCreated({
+            id: lead.id,
+            name: lead.name ?? "New lead",
+            status: lead.status,
+        });
+    }, [notifications.isActive]);
+
+    const handleRealtimeLeadStatusChanged = useCallback((lead: {
+        id: string;
+        name?: string;
+        previousStatus?: string;
+        status?: string;
+    }) => {
+        if (!notifications.isActive) return;
+        void notifyLeadStatusChanged({
+            id: lead.id,
+            name: lead.name ?? "Lead",
+            fromStatus: lead.previousStatus,
+            toStatus: lead.status,
+        });
+    }, [notifications.isActive]);
+
+    const { syncActive } = useRealtimeLeads({
+        enabled: notifications.isActive,
+        collectionPath: process.env.NEXT_PUBLIC_FIREBASE_LEADS_COLLECTION || "leads",
+        onLeadCreated: handleRealtimeLeadCreated,
+        onLeadStatusChanged: handleRealtimeLeadStatusChanged,
+    });
 
     const loadLeads = async (targetPage = page) => {
         setLoading(true);
@@ -363,8 +400,16 @@ export default function LeadsPage() {
         setSaving(true);
         try {
             if (mode === "create") {
-                await api.post(API.EasyFollowUp.LEADS, payload);
+                const response = await api.post(API.EasyFollowUp.LEADS, payload);
                 toast.success("Lead added.");
+                const createdLead = response.data?.data;
+                if (notifications.isActive && createdLead?.id) {
+                    void notifyLeadCreated({
+                        id: createdLead.id,
+                        name: createdLead.name ?? payload.name,
+                        status: createdLead.status,
+                    });
+                }
                 setCreateOpen(false);
             } else if (activeLead) {
                 await api.put(API.EasyFollowUp.LEAD_BY_ID(activeLead.id), payload);
@@ -414,6 +459,14 @@ export default function LeadsPage() {
 
             if (contactStatus !== "KEEP") {
                 await api.put(API.EasyFollowUp.LEAD_BY_ID(activeLead.id), { status: contactStatus });
+                if (notifications.isActive) {
+                    void notifyLeadStatusChanged({
+                        id: activeLead.id,
+                        name: activeLead.name,
+                        fromStatus: activeLead.status,
+                        toStatus: contactStatus,
+                    });
+                }
             }
 
             toast.success("Contact log saved.");
@@ -666,27 +719,37 @@ export default function LeadsPage() {
     };
 
     return (
-        <main className="p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-                <div>
-                    <h1 className="text-2xl font-semibold">Leads</h1>
-                    <p className="mt-1 text-sm text-muted-foreground">Manage manual and automated lead capture in one explorer.</p>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept=".csv,.xlsx,.xls,.json,text/csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
-                        className="hidden"
-                        onChange={handleImportFile}
-                    />
-                    <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importing}>
-                        {importing ? "Importing..." : "Import Leads"}
-                    </Button>
+        <Container className="py-4 md:py-6 lg:py-8">
+            <main className="space-y-6">
+                <PageHeader
+                    title="Leads"
+                    description="Manage manual and automated lead capture in one explorer."
+                    actions={
+                        <div className="flex flex-wrap items-center gap-2">
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                accept=".csv,.xlsx,.xls,.json,text/csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
+                                className="hidden"
+                                onChange={handleImportFile}
+                            />
+                            <Button variant="outline" onClick={() => fileInputRef.current?.click()} disabled={importing}>
+                                {importing ? "Importing..." : "Import Leads"}
+                            </Button>
 
-                    <Button onClick={openCreate}>+ Add Lead</Button>
+                            <Button onClick={openCreate}>+ Add Lead</Button>
+                        </div>
+                    }
+                />
+
+                <div className="flex flex-wrap items-center gap-2">
+                    <Badge variant={notifications.isActive ? "default" : "secondary"}>
+                        Notifications {notifications.isActive ? "enabled" : "disabled"}
+                    </Badge>
+                    <Badge variant={syncActive ? "default" : "secondary"}>
+                        Realtime sync {syncActive ? "active" : "inactive"}
+                    </Badge>
                 </div>
-            </div>
 
             <div className="mt-6 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
                 <Input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search by name, phone, email" />
@@ -1043,7 +1106,7 @@ export default function LeadsPage() {
 
 
             <Dialog open={importPreviewOpen} onOpenChange={closeImportPreview}>
-                <DialogContent className="!max-w-none w-[80vw] h-[92vh] p-4 overflow-hidden">
+                    <DialogContent className="max-w-none! h-[92vh] w-[80vw] overflow-hidden p-4">
                     <DialogHeader>
                         <DialogTitle>Confirm Import</DialogTitle>
                         <DialogDescription>
@@ -1061,7 +1124,7 @@ export default function LeadsPage() {
                                 <thead className="sticky top-0 border-b bg-background">
                                     <tr>
                                         <th className="sticky left-0 z-10 bg-background px-3 py-2 font-medium">#</th>
-                                        <th className="sticky left-[48px] z-10 bg-background px-3 py-2 font-medium">Row action</th>
+                                            <th className="sticky left-12 z-10 bg-background px-3 py-2 font-medium">Row action</th>
                                         {pendingImportHeaders.map((header) => (
                                             <th key={header} className="px-3 py-2 font-medium">{header}</th>
                                         ))}
@@ -1071,7 +1134,7 @@ export default function LeadsPage() {
                                     {pendingImportRows.map((row, index) => (
                                         <tr key={index} className="border-b last:border-b-0">
                                             <td className="sticky left-0 bg-background px-3 py-2 align-top text-muted-foreground">{index + 1}</td>
-                                            <td className="sticky left-[48px] bg-background px-3 py-2 align-top">
+                                            <td className="sticky left-12 bg-background px-3 py-2 align-top">
                                                 <Button
                                                     type="button"
                                                     size="sm"
@@ -1086,7 +1149,7 @@ export default function LeadsPage() {
                                                     <Input
                                                         value={String(row[header] ?? "")}
                                                         onChange={(event) => updatePendingImportCell(index, header, event.target.value)}
-                                                        className="h-8 w-[140px] min-w-[140px]"
+                                                        className="h-8 min-w-35 w-35"
                                                     />
                                                 </td>
                                             ))}
@@ -1109,6 +1172,7 @@ export default function LeadsPage() {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </main>
+            </main>
+        </Container>
     );
 }

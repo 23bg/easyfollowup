@@ -9,6 +9,11 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
+import Section from "@/components/ui/section";
+import { Grid, Stack } from "@/components/ui/layout-primitives";
+import ResponsiveTable, { ResponsiveTableColumn } from "@/components/tables/ResponsiveTable";
 
 type LeadOption = {
     id: string;
@@ -93,30 +98,62 @@ export default function ContactLogsPage() {
         }
     };
 
-    return (
-        <main className="p-6">
-            <h1 className="text-2xl font-semibold">Contact Logs</h1>
-            <p className="mt-1 text-sm text-muted-foreground">Track calls, emails, WhatsApp, demos, and meetings across leads.</p>
+    const logColumns: ResponsiveTableColumn<ContactItem>[] = [
+        { key: "lead", title: "Lead", isPrimary: true, render: (item) => item.lead?.name ?? "-" },
+        { key: "type", title: "Type", render: (item) => item.type },
+        { key: "notes", title: "Notes", render: (item) => item.notes ?? "-" },
+        { key: "createdAt", title: "Created", render: (item) => new Date(item.createdAt).toLocaleString() },
+    ];
 
-            <section className="mt-6 rounded border p-4">
-                <h2 className="text-lg font-semibold">Log Contact Activity</h2>
-                <div className="mt-4 grid gap-3 md:grid-cols-2">
-                    <div>
-                        <Label>Lead</Label>
-                        <Select value={leadId} onValueChange={setLeadId}>
-                            <SelectTrigger><SelectValue placeholder="Select lead" /></SelectTrigger>
-                            <SelectContent>
-                                {leads.map((lead) => (
-                                    <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
+    return (
+        <Container className="py-4 md:py-6 lg:py-8">
+            <Stack>
+                <PageHeader
+                    title="Contact Logs"
+                    description="Track calls, emails, WhatsApp, demos, and meetings across leads."
+                />
+
+                <Section title="Log Contact Activity">
+                    <Grid className="md:grid-cols-2">
+                        <div className="space-y-2">
+                            <Label>Lead</Label>
+                            <Select value={leadId} onValueChange={setLeadId}>
+                                <SelectTrigger><SelectValue placeholder="Select lead" /></SelectTrigger>
+                                <SelectContent>
+                                    {leads.map((lead) => (
+                                        <SelectItem key={lead.id} value={lead.id}>{lead.name}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <Label>Type</Label>
+                            <Select value={type} onValueChange={setType}>
+                                <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="CALL">CALL</SelectItem>
+                                    <SelectItem value="WHATSAPP">WHATSAPP</SelectItem>
+                                    <SelectItem value="EMAIL">EMAIL</SelectItem>
+                                    <SelectItem value="DEMO">DEMO</SelectItem>
+                                    <SelectItem value="MEETING">MEETING</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                    </Grid>
+                    <div className="mt-3 space-y-2">
+                        <Label>Notes</Label>
+                        <Textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Outcome, next action, objections..." />
                     </div>
-                    <div>
-                        <Label>Type</Label>
-                        <Select value={type} onValueChange={setType}>
-                            <SelectTrigger><SelectValue placeholder="Type" /></SelectTrigger>
+                    <Button className="mt-4" onClick={submit} disabled={saving}>Save Contact Log</Button>
+                </Section>
+
+                <Section title="History">
+                    <Grid className="md:grid-cols-2 lg:grid-cols-3">
+                        <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search lead name or notes" />
+                        <Select value={typeFilter} onValueChange={setTypeFilter}>
+                            <SelectTrigger><SelectValue placeholder="Filter type" /></SelectTrigger>
                             <SelectContent>
+                                <SelectItem value="ALL">ALL</SelectItem>
                                 <SelectItem value="CALL">CALL</SelectItem>
                                 <SelectItem value="WHATSAPP">WHATSAPP</SelectItem>
                                 <SelectItem value="EMAIL">EMAIL</SelectItem>
@@ -124,60 +161,23 @@ export default function ContactLogsPage() {
                                 <SelectItem value="MEETING">MEETING</SelectItem>
                             </SelectContent>
                         </Select>
-                    </div>
-                </div>
-                <div className="mt-3">
-                    <Label>Notes</Label>
-                    <Textarea rows={3} value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Outcome, next action, objections..." />
-                </div>
-                <Button className="mt-4" onClick={submit} disabled={saving}>Save Contact Log</Button>
-            </section>
+                    </Grid>
 
-            <section className="mt-6">
-                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search lead name or notes" />
-                    <Select value={typeFilter} onValueChange={setTypeFilter}>
-                        <SelectTrigger><SelectValue placeholder="Filter type" /></SelectTrigger>
-                        <SelectContent>
-                            <SelectItem value="ALL">ALL</SelectItem>
-                            <SelectItem value="CALL">CALL</SelectItem>
-                            <SelectItem value="WHATSAPP">WHATSAPP</SelectItem>
-                            <SelectItem value="EMAIL">EMAIL</SelectItem>
-                            <SelectItem value="DEMO">DEMO</SelectItem>
-                            <SelectItem value="MEETING">MEETING</SelectItem>
-                        </SelectContent>
-                    </Select>
-                </div>
-
-                {loading ? (
-                    <p className="mt-4 text-sm text-muted-foreground">Loading contact logs...</p>
-                ) : !items.length ? (
-                    <p className="mt-4 text-sm text-muted-foreground">No contact logs found.</p>
-                ) : (
-                            <div className="mt-4 overflow-x-auto rounded border">
-                        <table className="w-full text-left text-sm">
-                            <thead className="border-b bg-muted/40">
-                                <tr>
-                                    <th className="px-4 py-3 font-medium">Lead</th>
-                                    <th className="px-4 py-3 font-medium">Type</th>
-                                    <th className="px-4 py-3 font-medium">Notes</th>
-                                    <th className="px-4 py-3 font-medium">Created</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {items.map((item) => (
-                                    <tr key={item.id} className="border-b last:border-b-0">
-                                        <td className="px-4 py-3">{item.lead?.name ?? "-"}</td>
-                                        <td className="px-4 py-3">{item.type}</td>
-                                        <td className="px-4 py-3">{item.notes ?? "-"}</td>
-                                        <td className="px-4 py-3">{new Date(item.createdAt).toLocaleString()}</td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                )}
-            </section>
-        </main>
+                    {loading ? (
+                        <p className="mt-4 text-sm text-muted-foreground">Loading contact logs...</p>
+                    ) : (
+                        <div className="mt-4">
+                            <ResponsiveTable
+                                data={items}
+                                columns={logColumns}
+                                getRowKey={(item) => item.id}
+                                emptyTitle="No contact logs found"
+                                emptyDescription="Activity logs appear once calls or messages are recorded."
+                            />
+                        </div>
+                    )}
+                </Section>
+            </Stack>
+        </Container>
     );
 }

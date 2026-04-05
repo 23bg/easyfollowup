@@ -14,6 +14,16 @@ export default function ServiceWorkerRegister() {
     const register = async () => {
       try {
         registration = await navigator.serviceWorker.register('/sw.js');
+        await navigator.serviceWorker.register('/firebase-messaging-sw.js');
+
+        if ('sync' in registration) {
+          try {
+            await registration.sync.register('easyfollowup-sync-queue');
+          } catch {
+            // Background sync is best-effort.
+          }
+        }
+
         // listen for updates
         registration.addEventListener('updatefound', () => {
           const newWorker = registration?.installing;
@@ -32,9 +42,19 @@ export default function ServiceWorkerRegister() {
       }
     };
 
-    register();
+    const onServiceWorkerMessage = (event: MessageEvent) => {
+      const type = event.data?.type;
+      if (type === 'NOTIFICATION_CLICK' && event.data?.url) {
+        window.location.assign(event.data.url);
+      }
+    };
 
-    // cleanup not required
+    register();
+    navigator.serviceWorker.addEventListener('message', onServiceWorkerMessage);
+
+    return () => {
+      navigator.serviceWorker.removeEventListener('message', onServiceWorkerMessage);
+    };
   }, []);
 
   return null;

@@ -23,8 +23,8 @@ export default function NetworkBanner() {
   if (online) return null;
 
   return (
-    <div className="w-full bg-yellow-300 text-yellow-900 py-2 text-center">
-      You are offline — viewing cached data
+    <div className="sticky top-0 z-50 w-full border-b border-yellow-500/40 bg-yellow-300 py-2 text-center text-sm font-medium text-yellow-900">
+      You are offline. Viewing cached data.
     </div>
   );
 }

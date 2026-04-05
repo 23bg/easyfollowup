@@ -7,7 +7,6 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Geist } from "next/font/google";
 import ServiceWorkerRegister from "@/components/ServiceWorkerRegister";
 import NetworkBanner from "@/components/NetworkBanner";
-import PersistentStorageRequester from "@/components/pwa/PersistentStorageRequester";
 
 export const geist = Geist({
   subsets: ["latin"],
@@ -41,17 +40,17 @@ export default function RootLayout({
         <ThemeProvider>
           <ReduxProvider>
             <ServiceWorkerRegister />
-            <PersistentStorageRequester />
             <NetworkBanner />
             <NextTopLoader
               showSpinner={false}
               color="#111111"
               shadow={false}
             />
-            <main>{children}</main>
+            <main className="min-h-dvh">{children}</main>
             <Toaster
               duration={3000}
               position={"bottom-right"}
+              offset={{ bottom: "calc(1rem + var(--dashboard-bottom-nav-height))", right: "1rem" }}
             />
           </ReduxProvider>
         </ThemeProvider>

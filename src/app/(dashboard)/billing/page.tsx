@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import api from "@/lib/axios";
 import { API } from "@/constants/api";
 import { toast } from "sonner";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
+import { Stack } from "@/components/ui/layout-primitives";
 
 type BillingSummary = {
     planType?: string | null;
@@ -59,34 +62,36 @@ export default function BillingPage() {
     };
 
     return (
-        <main className="space-y-4 py-2">
-            <div>
-                <h1 className="text-2xl font-semibold">Billing</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Manage your EasyFollowUp subscription and plan limits.</p>
-            </div>
+        <Container className="py-4 md:py-6 lg:py-8">
+            <Stack>
+                <PageHeader
+                    title="Billing"
+                    description="Manage your EasyFollowUp subscription and plan limits."
+                />
 
-            <Card>
-                <CardHeader>
-                    <CardTitle>Current Plan</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm">
-                    {loading ? (
-                        <p className="text-muted-foreground">Loading billing details...</p>
-                    ) : (
-                        <>
-                            <p>Plan: <span className="font-medium">{summary?.planType ?? "SOLO"}</span></p>
-                            <p>Status: <span className="font-medium">{summary?.status ?? "TRIAL"}</span></p>
-                            <p>
-                                Period ends: <span className="font-medium">{summary?.currentPeriodEnd ? new Date(summary.currentPeriodEnd).toLocaleDateString() : "-"}</span>
-                            </p>
-                        </>
-                    )}
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Current Plan</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-2 text-sm">
+                        {loading ? (
+                            <p className="text-muted-foreground">Loading billing details...</p>
+                        ) : (
+                            <>
+                                <p>Plan: <span className="font-medium">{summary?.planType ?? "SOLO"}</span></p>
+                                <p>Status: <span className="font-medium">{summary?.status ?? "TRIAL"}</span></p>
+                                <p>
+                                    Period ends: <span className="font-medium">{summary?.currentPeriodEnd ? new Date(summary.currentPeriodEnd).toLocaleDateString() : "-"}</span>
+                                </p>
+                            </>
+                        )}
 
-                    <div className="pt-3">
-                        <Button onClick={upgrade} disabled={submitting || loading}>Upgrade to Team</Button>
-                    </div>
-                </CardContent>
-            </Card>
-        </main>
+                        <div className="pt-3">
+                            <Button onClick={upgrade} disabled={submitting || loading}>Upgrade to Team</Button>
+                        </div>
+                    </CardContent>
+                </Card>
+            </Stack>
+        </Container>
     );
 }

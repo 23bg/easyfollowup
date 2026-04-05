@@ -1,5 +1,26 @@
 // Persistent storage helpers: request persistent storage and a small IndexedDB wrapper
 
+const FALLBACK_PREFIX = "easyfollowup:fallback";
+
+const canUseIndexedDb = () => typeof indexedDB !== "undefined";
+
+const readFallback = <T>(key: string): T[] => {
+  if (typeof localStorage === "undefined") return [];
+  try {
+    const raw = localStorage.getItem(`${FALLBACK_PREFIX}:${key}`);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? (parsed as T[]) : [];
+  } catch {
+    return [];
+  }
+};
+
+const writeFallback = <T>(key: string, value: T[]) => {
+  if (typeof localStorage === "undefined") return;
+  localStorage.setItem(`${FALLBACK_PREFIX}:${key}`, JSON.stringify(value));
+};
+
 export async function requestPersistentStorage(): Promise<boolean> {
   if (typeof navigator === 'undefined' || !('storage' in navigator) || !(navigator as any).storage.persist) {
     return false;
@@ -15,6 +36,10 @@ export async function requestPersistentStorage(): Promise<boolean> {
 }
 
 function openDB(): Promise<IDBDatabase> {
+  if (!canUseIndexedDb()) {
+    return Promise.reject(new Error("IndexedDB is not available"));
+  }
+
   return new Promise((resolve, reject) => {
     const req = indexedDB.open('easyfollowup-local', 1);
     req.onupgradeneeded = () => {
@@ -44,6 +69,14 @@ async function withStore<T>(storeName: string, mode: IDBTransactionMode, fn: (st
 }
 
 export async function addLead(lead: Record<string, any>) {
+  if (!canUseIndexedDb()) {
+    const leads = readFallback<Record<string, any>>("leads");
+    const id = leads.length + 1;
+    leads.push({ ...lead, id, createdAt: Date.now() });
+    writeFallback("leads", leads);
+    return id;
+  }
+
   const db = await openDB();
   return new Promise<number>((resolve, reject) => {
     const tx = db.transaction('leads', 'readwrite');
@@ -55,6 +88,10 @@ export async function addLead(lead: Record<string, any>) {
 }
 
 export async function getLeads(): Promise<Record<string, any>[]> {
+  if (!canUseIndexedDb()) {
+    return readFallback<Record<string, any>>("leads");
+  }
+
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('leads', 'readonly');
@@ -66,6 +103,14 @@ export async function getLeads(): Promise<Record<string, any>[]> {
 }
 
 export async function addReminder(reminder: { time: number; title: string; body?: string }) {
+  if (!canUseIndexedDb()) {
+    const reminders = readFallback<{ id: number; time: number; title: string; body?: string }>("reminders");
+    const id = reminders.length + 1;
+    reminders.push({ ...reminder, id });
+    writeFallback("reminders", reminders);
+    return id;
+  }
+
   const db = await openDB();
   return new Promise<number>((resolve, reject) => {
     const tx = db.transaction('reminders', 'readwrite');
@@ -77,6 +122,11 @@ export async function addReminder(reminder: { time: number; title: string; body?
 }
 
 export async function getDueReminders(now = Date.now()): Promise<Array<{ id?: number; time: number; title: string; body?: string }>> {
+  if (!canUseIndexedDb()) {
+    const reminders = readFallback<Array<{ id?: number; time: number; title: string; body?: string }>[number]>("reminders");
+    return reminders.filter((r) => typeof r.time === 'number' && r.time <= now);
+  }
+
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx = db.transaction('reminders', 'readonly');
@@ -92,6 +142,15 @@ export async function getDueReminders(now = Date.now()): Promise<Array<{ id?: nu
 }
 
 export async function clearAllData() {
+  if (!canUseIndexedDb()) {
+    if (typeof localStorage !== "undefined") {
+      localStorage.removeItem(`${FALLBACK_PREFIX}:leads`);
+      localStorage.removeItem(`${FALLBACK_PREFIX}:reminders`);
+      localStorage.removeItem(`${FALLBACK_PREFIX}:syncQueue`);
+    }
+    return;
+  }
+
   const db = await openDB();
   return new Promise<void>((resolve, reject) => {
     const tx = db.transaction(['leads', 'reminders', 'syncQueue'], 'readwrite');

@@ -25,7 +25,7 @@ build/
 # ------------------------------------------------------
 # Environment & secrets
 # ------------------------------------------------------
-.env
+.env.*
 .env.*.local
 .env.local
 .env.development.local
@@ -117,3 +117,8 @@ functions/node_modules/
 # yarn.lock
 # package-lock.json
 # pnpm-lock.yaml
+
+# Sentry Config File
+.env.sentry-build-plugin
+keystore.txt
+release.jks

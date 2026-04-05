@@ -1,11 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
 import api from "@/lib/axios";
 import { API } from "@/constants/api";
 import { Loader2, UserPlus, PhoneCall, Trophy } from "lucide-react";
+import Section from "@/components/ui/section";
+import type { ResponsiveTableColumn } from "@/components/tables/ResponsiveTable";
+import { Grid, Stack } from "@/components/ui/layout-primitives";
+import LoadingState from "@/components/ui/loading-state";
+
+const ResponsiveTable = dynamic(() => import("@/components/tables/ResponsiveTable"), {
+    loading: () => <LoadingState showSkeleton className="py-2" />,
+});
 
 type Metrics = {
     totalLeads: number;
@@ -67,18 +77,34 @@ export default function DashboardPage() {
         { label: "Customers", value: metrics?.customers ?? 0, icon: Trophy, color: "text-foreground" },
     ];
 
-    return (
-        <main className="p-6">
-            <h1 className="text-2xl font-semibold">Dashboard</h1>
-            <p className="mt-1 text-muted-foreground">Monthly performance snapshot.</p>
+    const recentLeadColumns: ResponsiveTableColumn<Metrics["recentLeads"][number]>[] = [
+        {
+            key: "name",
+            title: "Name",
+            isPrimary: true,
+            render: (lead) => <span className="font-medium">{lead.name}</span>,
+        },
+        { key: "phone", title: "Phone", render: (lead) => lead.primaryPhone || "-" },
+        { key: "category", title: "Category", render: (lead) => lead.category || "-" },
+        { key: "city", title: "City", render: (lead) => lead.city || "-" },
+        { key: "status", title: "Status", render: (lead) => lead.status },
+    ];
 
-            {loading ? (
-                <div className="mt-8 flex justify-center">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
-            ) : (
-                <>
-                    <div className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    return (
+        <Container className="py-4 md:py-6 lg:py-8">
+            <Stack className="gap-6 md:gap-8">
+                <PageHeader
+                    title="Dashboard"
+                    description="Monthly performance snapshot."
+                />
+
+                {loading ? (
+                    <div className="flex justify-center py-8">
+                        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    </div>
+                ) : (
+                    <>
+                            <Grid className="md:grid-cols-2 xl:grid-cols-4">
                         {cards.map((card) => (
                             <Card key={card.label}>
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -90,43 +116,20 @@ export default function DashboardPage() {
                                 </CardContent>
                             </Card>
                         ))}
-                    </div>
+                            </Grid>
 
-                    <Card className="mt-6">
-                        <CardHeader>
-                            <CardTitle className="text-base">Recent Leads</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            {!metrics?.recentLeads?.length ? (
-                                <p className="text-sm text-muted-foreground">No leads found yet.</p>
-                            ) : (
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Name</TableHead>
-                                            <TableHead>Phone</TableHead>
-                                            <TableHead>Category</TableHead>
-                                            <TableHead>City</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {metrics.recentLeads.map((lead) => (
-                                            <TableRow key={lead.id}>
-                                                <TableCell className="font-medium">{lead.name}</TableCell>
-                                                <TableCell>{lead.primaryPhone || "-"}</TableCell>
-                                                <TableCell>{lead.category || "-"}</TableCell>
-                                                <TableCell>{lead.city || "-"}</TableCell>
-                                                <TableCell>{lead.status}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            )}
-                        </CardContent>
-                    </Card>
-                </>
-            )}
-        </main>
+                        <Section title="Recent Leads">
+                            <ResponsiveTable
+                                data={metrics?.recentLeads ?? []}
+                                columns={recentLeadColumns}
+                                getRowKey={(lead) => lead.id}
+                                emptyTitle="No leads found"
+                                emptyDescription="Newly captured leads will appear here."
+                            />
+                        </Section>
+                    </>
+                )}
+            </Stack>
+        </Container>
     );
 }

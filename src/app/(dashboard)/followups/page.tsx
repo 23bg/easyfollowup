@@ -6,6 +6,9 @@ import { API } from "@/constants/api";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Container from "@/components/layout/Container";
+import PageHeader from "@/components/layout/PageHeader";
+import { Stack } from "@/components/ui/layout-primitives";
 
 type FollowUpItem = {
     id: string;
@@ -48,46 +51,48 @@ export default function FollowUpsPage() {
     }, []);
 
     return (
-        <main className="space-y-4 py-2">
-            <div>
-                <h1 className="text-2xl font-semibold">Follow-ups</h1>
-                <p className="mt-1 text-sm text-muted-foreground">Upcoming and overdue reminders across your leads.</p>
-            </div>
+        <Container className="py-4 md:py-6 lg:py-8">
+            <Stack>
+                <PageHeader
+                    title="Follow-ups"
+                    description="Upcoming and overdue reminders across your leads."
+                />
 
-            {loading ? (
-                <Card>
-                    <CardContent className="py-8 text-sm text-muted-foreground">Loading follow-ups...</CardContent>
-                </Card>
-            ) : !items.length ? (
-                <Card>
-                    <CardContent className="py-8 text-sm text-muted-foreground">No upcoming follow-ups.</CardContent>
-                </Card>
-            ) : (
-                <div className="grid gap-3">
-                    {items.map((item) => {
-                        const isOverdue = !!item.nextDate && new Date(item.nextDate).getTime() < Date.now() && !item.completed;
-                        return (
-                            <Card key={item.id} className={isOverdue ? "border-red-400/60" : ""}>
-                                <CardHeader className="pb-2">
-                                    <div className="flex flex-wrap items-center justify-between gap-2">
-                                        <CardTitle className="text-base">{item.lead?.name ?? "Unknown Lead"}</CardTitle>
-                                        <div className="flex items-center gap-2">
-                                            {isOverdue ? <Badge variant="destructive">Overdue</Badge> : <Badge variant="secondary">Upcoming</Badge>}
-                                            <Badge variant="outline">{item.lead?.status ?? "NEW"}</Badge>
+                {loading ? (
+                    <Card>
+                        <CardContent className="py-8 text-sm text-muted-foreground">Loading follow-ups...</CardContent>
+                    </Card>
+                ) : !items.length ? (
+                    <Card>
+                        <CardContent className="py-8 text-sm text-muted-foreground">No upcoming follow-ups.</CardContent>
+                    </Card>
+                ) : (
+                    <div className="grid gap-3">
+                        {items.map((item) => {
+                            const isOverdue = !!item.nextDate && new Date(item.nextDate).getTime() < Date.now() && !item.completed;
+                            return (
+                                <Card key={item.id} className={isOverdue ? "border-red-400/60" : ""}>
+                                    <CardHeader className="pb-2">
+                                        <div className="flex flex-wrap items-center justify-between gap-2">
+                                            <CardTitle className="text-base">{item.lead?.name ?? "Unknown Lead"}</CardTitle>
+                                            <div className="flex items-center gap-2">
+                                                {isOverdue ? <Badge variant="destructive">Overdue</Badge> : <Badge variant="secondary">Upcoming</Badge>}
+                                                <Badge variant="outline">{item.lead?.status ?? "NEW"}</Badge>
+                                            </div>
                                         </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-2 text-sm">
-                                    <p className="text-foreground">{item.note}</p>
-                                    <p className="text-muted-foreground">
-                                        Next date: {item.nextDate ? new Date(item.nextDate).toLocaleString() : "Not set"}
-                                    </p>
-                                </CardContent>
-                            </Card>
-                        );
-                    })}
-                </div>
-            )}
-        </main>
+                                    </CardHeader>
+                                    <CardContent className="space-y-2 text-sm">
+                                        <p className="text-foreground">{item.note}</p>
+                                        <p className="text-muted-foreground">
+                                            Next date: {item.nextDate ? new Date(item.nextDate).toLocaleString() : "Not set"}
+                                        </p>
+                                    </CardContent>
+                                </Card>
+                            );
+                        })}
+                    </div>
+                )}
+            </Stack>
+        </Container>
     );
 }
