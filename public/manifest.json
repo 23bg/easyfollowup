@@ -1,6 +1,6 @@
 {
-  "name": "EasyFollowup",
-  "short_name": "Followup",
+  "name": "EasyFollowUp",
+  "short_name": "EasyFollowUp",
   "description": "Simple CRM for managing leads and follow-ups",
   "start_url": "/?source=pwa",
   "scope": "/",

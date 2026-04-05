@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/db/prisma";
+import { getAllPseoSlugs } from "@/modules/marketing/pseo/content";
+
+export const dynamic = "force-dynamic";
 
 const BASE_URL = process.env.NEXT_PUBLIC_APP_URL || "https://easyfollowup.pro";
 
@@ -82,5 +85,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         // If DB is unavailable, return only static pages
     }
 
-    return [...staticPages, ...organizationPages];
+    const pseoPages: MetadataRoute.Sitemap = getAllPseoSlugs().map((slug) => ({
+        url: `${BASE_URL}/${slug}`,
+        lastModified: new Date(),
+        changeFrequency: "weekly" as const,
+        priority: 0.55,
+    }));
+
+    return [...staticPages, ...organizationPages, ...pseoPages];
 }
